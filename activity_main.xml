@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/main"
+
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+
+    android:padding="8dp">
+
+
+    <!-- Top Controls -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="START"/>
+
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="STOP"/>
+
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RESET"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Refresh rate for record"/>
+    <Spinner
+        android:id="@+id/spRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CPU Sensor"/>
+    <Spinner
+        android:id="@+id/spCPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GPU Sensor"/>
+    <Spinner
+        android:id="@+id/spGPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ready"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+
+
+    <!-- CPU -->
+
+    <TextView
+        android:id="@+id/txtCPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CPU : --  Min: --  Max: --"/>
+
+
+
+    <!-- GPU -->
+
+    <TextView
+        android:id="@+id/txtGPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GPU : --  Min: --  Max: --"/>
+
+
+
+    <!-- Battery -->
+
+    <TextView
+        android:id="@+id/txtBattery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Battery : --  Min: --  Max: --"/>
+
+
+    <TextView
+        android:id="@+id/txtCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Samples : 0"/>
+
+
+
+    <!-- Bottom -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+
+        <Button
+            android:id="@+id/btnShowLog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show Log"/>
+
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Export CSV"/>
+
+
+    </LinearLayout>
+
+
+
+    <ScrollView
+        android:id="@+id/scrollLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtSensors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sensors"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/txtLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:typeface="monospace"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
