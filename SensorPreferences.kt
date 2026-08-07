@@ -109,9 +109,6 @@ class SensorPreferences(context: Context) {
             .remove(KEY_ENABLED_SENSORS)
             .apply()
     }
-    fun isBatteryPercentageEnabled(): Boolean {
-        return prefs.getBoolean("battery_percentage_enabled", false)
-    }
 
     fun setBatteryPercentageEnabled(enabled: Boolean) {
         prefs.edit()
@@ -129,5 +126,22 @@ class SensorPreferences(context: Context) {
             "selected_sensors",
             emptySet()
         ) ?: emptySet()
+    }
+    fun isBatteryPercentageEnabled(): Boolean {
+        return prefs.getBoolean(
+            "battery_percentage_enabled",
+            false
+        )
+    }
+
+    fun saveBatteryPercentageEnabled(
+        enabled: Boolean
+    ) {
+        prefs.edit()
+            .putBoolean(
+                "battery_percentage_enabled",
+                enabled
+            )
+            .apply()
     }
 }
