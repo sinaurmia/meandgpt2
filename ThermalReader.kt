@@ -9,10 +9,10 @@ import java.util.Locale
 class ThermalReader(
     private val context: Context
 ) {
-
     companion object {
         private const val THERMAL_PATH = "/sys/class/thermal"
     }
+
 
     private val preferences = SensorPreferences(context)
 
@@ -30,6 +30,10 @@ class ThermalReader(
         ).format(Date())
     }
 
+    /*
+     * تمام سنسورها را برمی‌گرداند.
+     * این لیست برای صفحه Settings استفاده می‌شود.
+     */
     fun getSensorList(): List<String> {
         sensorCache?.let {
             return it.map { sensor -> sensor.name }.sorted()
@@ -42,7 +46,10 @@ class ThermalReader(
 
             if (rebuilt.isNotEmpty()) {
                 sensorCache = rebuilt
-                return rebuilt.map { it.name }.sorted()
+
+                return rebuilt
+                    .map { it.name }
+                    .sorted()
             }
         }
 
@@ -54,9 +61,14 @@ class ThermalReader(
             scanned.map { it.name }
         )
 
-        return scanned.map { it.name }.sorted()
+        return scanned
+            .map { it.name }
+            .sorted()
     }
 
+    /*
+     * اسکن مجدد سنسورها.
+     */
     fun refreshSensorCache() {
         val list = scanSensors()
 
@@ -65,40 +77,6 @@ class ThermalReader(
         preferences.saveSensorList(
             list.map { it.name }
         )
-    }
-
-    fun getAutoCpuSensorName(): String? {
-        val list = getSensorInfoList()
-
-        return list.firstOrNull {
-            detectSensor(it.name) == SensorType.CPU
-        }?.name
-    }
-
-    fun getAutoGpuSensorName(): String? {
-        val list = getSensorInfoList()
-
-        return list.firstOrNull {
-            detectSensor(it.name) == SensorType.GPU
-        }?.name
-    }
-
-    private fun getSensorInfoList(): List<SensorInfo> {
-        sensorCache?.let {
-            return it
-        }
-
-        val scanned = scanSensors()
-
-        sensorCache = scanned
-
-        if (preferences.getSensorList().isEmpty()) {
-            preferences.saveSensorList(
-                scanned.map { it.name }
-            )
-        }
-
-        return scanned
     }
 
     private fun rebuildFromSavedList(
@@ -113,6 +91,7 @@ class ThermalReader(
 
     private fun scanSensors(): List<SensorInfo> {
         val result = mutableListOf<SensorInfo>()
+
         val thermalDir = File(THERMAL_PATH)
 
         if (!thermalDir.exists())
@@ -129,7 +108,9 @@ class ThermalReader(
                 val typeFile = File(zone, "type")
                 val tempFile = File(zone, "temp")
 
-                if (!typeFile.exists() || !tempFile.exists())
+                if (!typeFile.exists() ||
+                    !tempFile.exists()
+                )
                     continue
 
                 val name = readFileSafe(typeFile)
@@ -137,8 +118,8 @@ class ThermalReader(
 
                 result.add(
                     SensorInfo(
-                        name = name,
-                        tempFile = tempFile
+                        name,
+                        tempFile
                     )
                 )
             } catch (_: Exception) {
@@ -148,88 +129,139 @@ class ThermalReader(
         return result
     }
 
+    /*
+     * خواندن دماها.
+     *
+     * CPU و GPU اصلی همیشه خوانده می‌شوند.
+     * Battery thermal sensor نیز خوانده می‌شود.
+     * سایر سنسورها فقط در صورت انتخاب شدن در Settings خوانده می‌شوند.
+     */
     fun readAll(): Sample {
         val sensors = mutableMapOf<String, Float>()
 
         var cpu: Float? = null
         var cpuSensorName: String? = null
+
         var gpu: Float? = null
         var gpuSensorName: String? = null
+
         var battery: Float? = null
 
-        val list = getSensorInfoList()
+        val list = sensorCache
+            ?: scanSensors().also {
+                sensorCache = it
+            }
 
-        val selectedCpu = preferences.getCpuSensor()
-        val selectedGpu = preferences.getGpuSensor()
-        val enabledSensors = preferences.getEnabledSensors()
+        val selectedCpu =
+            preferences.getCpuSensor()
 
-        val autoCpu = if (selectedCpu == null)
-            findAutoSensor(list, SensorType.CPU)
-        else
-            null
+        val selectedGpu =
+            preferences.getGpuSensor()
 
-        val autoGpu = if (selectedGpu == null)
-            findAutoSensor(list, SensorType.GPU)
-        else
-            null
+        val enabledSensors =
+            preferences.getEnabledSensors()
 
         for (sensor in list) {
-            val name = sensor.name
-
-            val isSelectedCpu =
-                selectedCpu != null &&
-                        name.equals(selectedCpu, ignoreCase = true)
-
-            val isSelectedGpu =
-                selectedGpu != null &&
-                        name.equals(selectedGpu, ignoreCase = true)
-
-            val isAutoCpu =
-                selectedCpu == null &&
-                        name == autoCpu
-
-            val isAutoGpu =
-                selectedGpu == null &&
-                        name == autoGpu
-
-            val type = detectSensor(name)
-
-            val isBattery =
-                type == SensorType.BATTERY
-
-            val isEnabled =
-                enabledSensors.contains(name)
-
-            val shouldRead =
-                isSelectedCpu ||
-                        isSelectedGpu ||
-                        isAutoCpu ||
-                        isAutoGpu ||
-                        isBattery ||
-                        isEnabled
-
-            if (!shouldRead)
-                continue
-
             try {
-                val value = readTemperature(sensor.tempFile)
-                    ?: continue
+                val sensorType =
+                    detectSensor(sensor.name)
 
-                if (isEnabled)
-                    sensors[name] = value
+                val isSelectedSensor =
+                    enabledSensors.contains(sensor.name)
 
-                if (isSelectedCpu || isAutoCpu) {
+                /*
+                 * CPU و GPU اصلی باید همیشه خوانده شوند.
+                 * Battery thermal نیز همیشه خوانده می‌شود.
+                 * سایر سنسورها فقط در صورت انتخاب شدن خوانده می‌شوند.
+                 */
+                val shouldRead =
+                    isSelectedSensor ||
+                            sensorType == SensorType.CPU ||
+                            sensorType == SensorType.GPU ||
+                            sensorType == SensorType.BATTERY
+
+                if (!shouldRead)
+                    continue
+
+                val value =
+                    readTemperature(sensor.tempFile)
+                        ?: continue
+
+                /*
+                 * سنسورهای انتخاب‌شده برای نمایش و ثبت.
+                 *
+                 * CPU/GPU/Battery جداگانه در Sample
+                 * نیز ذخیره می‌شوند، ولی اگر کاربر آن‌ها
+                 * را در Settings انتخاب کرده باشد در sensors
+                 * هم قرار می‌گیرند.
+                 */
+                if (isSelectedSensor) {
+                    sensors[sensor.name] = value
+                }
+
+                /*
+                 * انتخاب دستی CPU
+                 */
+                if (
+                    selectedCpu != null &&
+                    sensor.name.equals(
+                        selectedCpu,
+                        true
+                    )
+                ) {
                     cpu = value
-                    cpuSensorName = name
+                    cpuSensorName = sensor.name
                 }
 
-                if (isSelectedGpu || isAutoGpu) {
+                /*
+                 * انتخاب دستی GPU
+                 */
+                if (
+                    selectedGpu != null &&
+                    sensor.name.equals(
+                        selectedGpu,
+                        true
+                    )
+                ) {
                     gpu = value
-                    gpuSensorName = name
+                    gpuSensorName = sensor.name
                 }
 
-                if (isBattery && battery == null) {
-                    battery = value
+                /*
+                 * تشخیص خودکار CPU/GPU/Battery
+                 *
+                 * فقط زمانی استفاده می‌شود که CPU/GPU
+                 * به صورت دستی انتخاب نشده باشند.
+                 */
+                when (sensorType) {
+                    SensorType.CPU -> {
+                        if (
+                            selectedCpu == null &&
+                            cpu == null
+                        ) {
+                            cpu = value
+                            cpuSensorName = sensor.name
+                        }
+                    }
+
+                    SensorType.GPU -> {
+                        if (
+                            selectedGpu == null &&
+                            gpu == null
+                        ) {
+                            gpu = value
+                            gpuSensorName = sensor.name
+                        }
+                    }
+
+                    SensorType.BATTERY -> {
+                        if (battery == null) {
+                            battery = value
+                        }
+                    }
+
+                    SensorType.UNKNOWN -> {
+                    }
                 }
             } catch (_: Exception) {
             }
@@ -247,15 +279,6 @@ class ThermalReader(
         )
     }
 
-    private fun findAutoSensor(
-        list: List<SensorInfo>,
-        type: SensorType
-    ): String? {
-        return list.firstOrNull {
-            detectSensor(it.name) == type
-        }?.name
-    }
-
     private enum class SensorType {
         CPU,
         GPU,
@@ -263,7 +286,9 @@ class ThermalReader(
         UNKNOWN
     }
 
-    private fun detectSensor(name: String): SensorType {
+    private fun detectSensor(
+        name: String
+    ): SensorType {
         val n = name.lowercase()
 
         return when {
@@ -290,7 +315,9 @@ class ThermalReader(
         }
     }
 
-    private fun readFileSafe(file: File): String? {
+    private fun readFileSafe(
+        file: File
+    ): String? {
         return try {
             if (!file.exists())
                 return null
@@ -301,16 +328,21 @@ class ThermalReader(
         }
     }
 
-    private fun readTemperature(file: File): Float? {
-        val text = readFileSafe(file)
-            ?: return null
+    private fun readTemperature(
+        file: File
+    ): Float? {
+        val text =
+            readFileSafe(file)
+                ?: return null
 
-        var value = text.toFloatOrNull()
-            ?: return null
+        var value =
+            text.toFloatOrNull()
+                ?: return null
 
         if (value > 1000f)
             value /= 1000f
 
         return value
     }
+
 }
