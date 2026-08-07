@@ -10,228 +10,130 @@ class ThermalReader(
     private val context: Context
 ) {
 
-    
     companion object {
-
-        private const val THERMAL_PATH =
-            "/sys/class/thermal"
-
+        private const val THERMAL_PATH = "/sys/class/thermal"
     }
 
-
-    private val preferences =
-        SensorPreferences(context)
-
+    private val preferences = SensorPreferences(context)
 
     private data class SensorInfo(
         val name: String,
         val tempFile: File
     )
 
-
-    private var sensorCache:
-            List<SensorInfo>? = null
-
+    private var sensorCache: List<SensorInfo>? = null
 
     private fun getCurrentDate(): String {
-
         return SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss",
             Locale.getDefault()
         ).format(Date())
-
     }
-
-
-// --------------------------------------------------
-// Sensor List
-// --------------------------------------------------
-
-    /*
-     * این تابع تمام سنسورهای موجود در گوشی را برمی‌گرداند.
-     *
-     * نکته:
-     * اینجا همه سنسورها اسکن می‌شوند چون صفحه تنظیمات
-     * باید بتواند لیست کامل سنسورها را به کاربر نشان دهد.
-     *
-     * اما در readAll() فقط سنسورهای مورد نیاز خوانده می‌شوند.
-     */
 
     fun getSensorList(): List<String> {
-
         sensorCache?.let {
-
-            return it
-                .map { sensor ->
-                    sensor.name
-                }
-                .sorted()
-
+            return it.map { sensor -> sensor.name }.sorted()
         }
 
-
-        val saved =
-            preferences.getSensorList()
-
+        val saved = preferences.getSensorList()
 
         if (saved.isNotEmpty()) {
-
-            val rebuilt =
-                rebuildFromSavedList(
-                    saved
-                )
-
+            val rebuilt = rebuildFromSavedList(saved)
 
             if (rebuilt.isNotEmpty()) {
-
-                sensorCache =
-                    rebuilt
-
-                return rebuilt
-                    .map {
-                        it.name
-                    }
-                    .sorted()
-
+                sensorCache = rebuilt
+                return rebuilt.map { it.name }.sorted()
             }
-
         }
 
+        val scanned = scanSensors()
 
-        val scanned =
-            scanSensors()
-
-
-        sensorCache =
-            scanned
-
+        sensorCache = scanned
 
         preferences.saveSensorList(
-            scanned.map {
-                it.name
-            }
+            scanned.map { it.name }
         )
 
-
-        return scanned
-            .map {
-                it.name
-            }
-            .sorted()
-
+        return scanned.map { it.name }.sorted()
     }
-
-
-    /*
-     * اسکن مجدد سنسورها.
-     *
-     * در صورت تغییر سنسورهای گوشی یا نیاز به
-     * به‌روزرسانی لیست تنظیمات استفاده می‌شود.
-     */
 
     fun refreshSensorCache() {
+        val list = scanSensors()
 
-        val list =
-            scanSensors()
-
-
-        sensorCache =
-            list
-
+        sensorCache = list
 
         preferences.saveSensorList(
-            list.map {
-                it.name
-            }
+            list.map { it.name }
         )
-
     }
 
+    fun getAutoCpuSensorName(): String? {
+        val list = getSensorInfoList()
+
+        return list.firstOrNull {
+            detectSensor(it.name) == SensorType.CPU
+        }?.name
+    }
+
+    fun getAutoGpuSensorName(): String? {
+        val list = getSensorInfoList()
+
+        return list.firstOrNull {
+            detectSensor(it.name) == SensorType.GPU
+        }?.name
+    }
+
+    private fun getSensorInfoList(): List<SensorInfo> {
+        sensorCache?.let {
+            return it
+        }
+
+        val scanned = scanSensors()
+
+        sensorCache = scanned
+
+        if (preferences.getSensorList().isEmpty()) {
+            preferences.saveSensorList(
+                scanned.map { it.name }
+            )
+        }
+
+        return scanned
+    }
 
     private fun rebuildFromSavedList(
         names: List<String>
     ): List<SensorInfo> {
-
-        val current =
-            scanSensors()
-
+        val current = scanSensors()
 
         return current.filter {
-
-            names.contains(
-                it.name
-            )
-
+            names.contains(it.name)
         }
-
     }
 
-
-// --------------------------------------------------
-// Scan Thermal Zones
-// --------------------------------------------------
-
-    private fun scanSensors():
-            List<SensorInfo> {
-
-        val result =
-            mutableListOf<SensorInfo>()
-
-
-        val thermalDir =
-            File(
-                THERMAL_PATH
-            )
-
+    private fun scanSensors(): List<SensorInfo> {
+        val result = mutableListOf<SensorInfo>()
+        val thermalDir = File(THERMAL_PATH)
 
         if (!thermalDir.exists())
             return result
 
-
-        val zones =
-            thermalDir.listFiles()
-                ?.filter {
-
-                    it.name.startsWith(
-                        "thermal_zone"
-                    )
-
-                }
-                ?: emptyList()
-
+        val zones = thermalDir.listFiles()
+            ?.filter {
+                it.name.startsWith("thermal_zone")
+            }
+            ?: emptyList()
 
         for (zone in zones) {
-
             try {
+                val typeFile = File(zone, "type")
+                val tempFile = File(zone, "temp")
 
-                val typeFile =
-                    File(
-                        zone,
-                        "type"
-                    )
-
-
-                val tempFile =
-                    File(
-                        zone,
-                        "temp"
-                    )
-
-
-                if (
-                    !typeFile.exists() ||
-                    !tempFile.exists()
-                ) {
+                if (!typeFile.exists() || !tempFile.exists())
                     continue
-                }
 
-
-                val name =
-                    readFileSafe(
-                        typeFile
-                    )
-                        ?: continue
-
+                val name = readFileSafe(typeFile)
+                    ?: continue
 
                 result.add(
                     SensorInfo(
@@ -239,535 +141,176 @@ class ThermalReader(
                         tempFile = tempFile
                     )
                 )
-
-
             } catch (_: Exception) {
-
-                // سنسور مشکل‌دار نادیده گرفته می‌شود.
-
             }
-
         }
-
 
         return result
-
     }
-
-
-// --------------------------------------------------
-// Read Selected Sensors
-// --------------------------------------------------
 
     fun readAll(): Sample {
-
-        val sensors =
-            mutableMapOf<String, Float>()
-
+        val sensors = mutableMapOf<String, Float>()
 
         var cpu: Float? = null
-
-        var cpuSensorName:
-                String? = null
-
-
+        var cpuSensorName: String? = null
         var gpu: Float? = null
-
-        var gpuSensorName:
-                String? = null
-
-
+        var gpuSensorName: String? = null
         var battery: Float? = null
 
+        val list = getSensorInfoList()
 
-        /*
-         * لیست سنسورها را از Cache می‌گیریم.
-         *
-         * اگر Cache وجود نداشت، یک بار اسکن می‌کنیم.
-         */
+        val selectedCpu = preferences.getCpuSensor()
+        val selectedGpu = preferences.getGpuSensor()
+        val enabledSensors = preferences.getEnabledSensors()
 
-        val list =
-            sensorCache
-                ?: scanSensors()
-                    .also {
+        val autoCpu = if (selectedCpu == null)
+            findAutoSensor(list, SensorType.CPU)
+        else
+            null
 
-                        sensorCache =
-                            it
-
-                    }
-
-
-        /*
-         * سنسور CPU و GPU که کاربر به صورت دستی
-         * انتخاب کرده است.
-         */
-
-        val selectedCpu =
-            preferences.getCpuSensor()
-
-
-        val selectedGpu =
-            preferences.getGpuSensor()
-
-
-        /*
-         * سنسورهای اضافی که کاربر در صفحه Settings
-         * فعال کرده است.
-         */
-
-        val enabledSensors =
-            preferences.getEnabledSensors()
-
-
-        /*
-         * اگر CPU یا GPU به صورت دستی انتخاب نشده باشد،
-         * اولین سنسور مناسب به صورت خودکار انتخاب می‌شود.
-         *
-         * فقط اسم سنسورها بررسی می‌شود و هنوز دمای آنها
-         * خوانده نشده است.
-         */
-
-        val cpuSensor =
-            if (selectedCpu != null) {
-
-                list.firstOrNull {
-
-                    it.name.equals(
-                        selectedCpu,
-                        true
-                    )
-
-                }
-
-            } else {
-
-                list.firstOrNull {
-
-                    detectSensor(
-                        it.name
-                    ) == SensorType.CPU
-
-                }
-
-            }
-
-
-        val gpuSensor =
-            if (selectedGpu != null) {
-
-                list.firstOrNull {
-
-                    it.name.equals(
-                        selectedGpu,
-                        true
-                    )
-
-                }
-
-            } else {
-
-                list.firstOrNull {
-
-                    detectSensor(
-                        it.name
-                    ) == SensorType.GPU
-
-                }
-
-            }
-
-
-        /*
-         * باتری فعلاً به صورت خودکار تشخیص داده می‌شود.
-         *
-         * در مرحله بعد می‌توانیم Battery Level،
-         * Voltage و سایر اطلاعات باتری را جدا کنیم.
-         */
-
-        val batterySensor =
-            list.firstOrNull {
-
-                detectSensor(
-                    it.name
-                ) == SensorType.BATTERY
-
-            }
-
-
-        /*
-         * مجموعه سنسورهایی که حتماً باید خوانده شوند.
-         *
-         * CPU و GPU اصلی و Battery همیشه جزو این مجموعه هستند.
-         *
-         * سنسورهای اضافی فقط در صورتی اضافه می‌شوند
-         * که کاربر آنها را فعال کرده باشد.
-         */
-
-        val requiredSensors =
-            mutableSetOf<String>()
-
-
-        cpuSensor?.let {
-
-            requiredSensors.add(
-                it.name
-            )
-
-        }
-
-
-        gpuSensor?.let {
-
-            requiredSensors.add(
-                it.name
-            )
-
-        }
-
-
-        batterySensor?.let {
-
-            requiredSensors.add(
-                it.name
-            )
-
-        }
-
-
-        requiredSensors.addAll(
-            enabledSensors
-        )
-
-
-        /*
-         * حالا فقط سنسورهای مورد نیاز را می‌خوانیم.
-         *
-         * این قسمت مهم‌ترین تغییر این نسخه است.
-         *
-         * اگر گوشی ۳۰ سنسور داشته باشد ولی کاربر فقط
-         * ۳ سنسور را انتخاب کرده باشد، سنسورهای دیگر
-         * اصلاً temp آنها خوانده نمی‌شود.
-         */
+        val autoGpu = if (selectedGpu == null)
+            findAutoSensor(list, SensorType.GPU)
+        else
+            null
 
         for (sensor in list) {
+            val name = sensor.name
 
-            /*
-             * اگر سنسور مورد نیاز نیست، کاملاً رد می‌شود.
-             */
+            val isSelectedCpu =
+                selectedCpu != null &&
+                        name.equals(selectedCpu, ignoreCase = true)
 
-            if (
-                !requiredSensors.contains(
-                    sensor.name
-                )
-            ) {
+            val isSelectedGpu =
+                selectedGpu != null &&
+                        name.equals(selectedGpu, ignoreCase = true)
+
+            val isAutoCpu =
+                selectedCpu == null &&
+                        name == autoCpu
+
+            val isAutoGpu =
+                selectedGpu == null &&
+                        name == autoGpu
+
+            val type = detectSensor(name)
+
+            val isBattery =
+                type == SensorType.BATTERY
+
+            val isEnabled =
+                enabledSensors.contains(name)
+
+            val shouldRead =
+                isSelectedCpu ||
+                        isSelectedGpu ||
+                        isAutoCpu ||
+                        isAutoGpu ||
+                        isBattery ||
+                        isEnabled
+
+            if (!shouldRead)
                 continue
-            }
-
 
             try {
+                val value = readTemperature(sensor.tempFile)
+                    ?: continue
 
-                val value =
-                    readTemperature(
-                        sensor.tempFile
-                    )
-                        ?: continue
+                if (isEnabled)
+                    sensors[name] = value
 
-
-                /*
-                 * سنسورهای اضافی انتخاب‌شده توسط کاربر
-                 * داخل Sample ذخیره می‌شوند.
-                 *
-                 * CPU/GPU/Battery هم در صورت وجود
-                 * داخل sensors قرار می‌گیرند.
-                 */
-
-                sensors[
-                    sensor.name
-                ] =
-                    value
-
-
-                /*
-                 * CPU اصلی
-                 */
-
-                if (
-                    cpuSensor != null &&
-                    sensor.name.equals(
-                        cpuSensor.name,
-                        true
-                    )
-                ) {
-
-                    cpu =
-                        value
-
-                    cpuSensorName =
-                        sensor.name
-
+                if (isSelectedCpu || isAutoCpu) {
+                    cpu = value
+                    cpuSensorName = name
                 }
 
-
-                /*
-                 * GPU اصلی
-                 */
-
-                if (
-                    gpuSensor != null &&
-                    sensor.name.equals(
-                        gpuSensor.name,
-                        true
-                    )
-                ) {
-
-                    gpu =
-                        value
-
-                    gpuSensorName =
-                        sensor.name
-
+                if (isSelectedGpu || isAutoGpu) {
+                    gpu = value
+                    gpuSensorName = name
                 }
 
-
-                /*
-                 * Battery
-                 */
-
-                if (
-                    batterySensor != null &&
-                    sensor.name.equals(
-                        batterySensor.name,
-                        true
-                    )
-                ) {
-
-                    battery =
-                        value
-
+                if (isBattery && battery == null) {
+                    battery = value
                 }
-
-
             } catch (_: Exception) {
-
-                // سنسور مشکل‌دار نادیده گرفته می‌شود.
-
             }
-
         }
-
 
         return Sample(
-
-            time =
-                System.currentTimeMillis(),
-
-
-            date =
-                getCurrentDate(),
-
-
-            cpu =
-                cpu,
-
-
-            cpuSensorName =
-                cpuSensorName,
-
-
-            gpu =
-                gpu,
-
-
-            gpuSensorName =
-                gpuSensorName,
-
-
-            battery =
-                battery,
-
-
-            sensors =
-                sensors.toSortedMap()
-
+            time = System.currentTimeMillis(),
+            date = getCurrentDate(),
+            cpu = cpu,
+            cpuSensorName = cpuSensorName,
+            gpu = gpu,
+            gpuSensorName = gpuSensorName,
+            battery = battery,
+            sensors = sensors.toSortedMap()
         )
-
     }
 
-
-// --------------------------------------------------
-// Sensor Detection
-// --------------------------------------------------
+    private fun findAutoSensor(
+        list: List<SensorInfo>,
+        type: SensorType
+    ): String? {
+        return list.firstOrNull {
+            detectSensor(it.name) == type
+        }?.name
+    }
 
     private enum class SensorType {
-
         CPU,
-
         GPU,
-
         BATTERY,
-
         UNKNOWN
-
     }
 
-
-    private fun detectSensor(
-        name: String
-    ): SensorType {
-
-        val n =
-            name.lowercase()
-
+    private fun detectSensor(name: String): SensorType {
+        val n = name.lowercase()
 
         return when {
-
-            /*
-             * CPU
-             */
-
-            n.contains("cpu") ->
-
+            n.contains("cpu") ||
+                    n.contains("mtktscpu") ||
+                    n.contains("cluster") ||
+                    n.contains("big") ||
+                    n.contains("little") ->
                 SensorType.CPU
 
-
-            n.contains("mtktscpu") ->
-
-                SensorType.CPU
-
-
-            n.contains("cluster") ->
-
-                SensorType.CPU
-
-
-            n.contains("big") ->
-
-                SensorType.CPU
-
-
-            n.contains("little") ->
-
-                SensorType.CPU
-
-
-            /*
-             * GPU
-             */
-
-            n.contains("gpu") ->
-
+            n.contains("gpu") ||
+                    n.contains("kgsl") ||
+                    n.contains("gpuss") ||
+                    n.contains("adreno") ->
                 SensorType.GPU
 
-
-            n.contains("kgsl") ->
-
-                SensorType.GPU
-
-
-            n.contains("gpuss") ->
-
-                SensorType.GPU
-
-
-            n.contains("adreno") ->
-
-                SensorType.GPU
-
-
-            /*
-             * Battery
-             */
-
-            n.contains("battery") ->
-
+            n.contains("battery") ||
+                    n.contains("bms") ||
+                    n.contains("bat") ->
                 SensorType.BATTERY
-
-
-            n.contains("bms") ->
-
-                SensorType.BATTERY
-
-
-            n.contains("bat") ->
-
-                SensorType.BATTERY
-
 
             else ->
-
                 SensorType.UNKNOWN
-
         }
-
     }
 
-
-// --------------------------------------------------
-// Safe File Reading
-// --------------------------------------------------
-
-    private fun readFileSafe(
-        file: File
-    ): String? {
-
+    private fun readFileSafe(file: File): String? {
         return try {
-
             if (!file.exists())
                 return null
 
-
-            file.readText()
-                .trim()
-
-
+            file.readText().trim()
         } catch (_: Exception) {
-
             null
-
         }
-
     }
 
+    private fun readTemperature(file: File): Float? {
+        val text = readFileSafe(file)
+            ?: return null
 
-// --------------------------------------------------
-// Temperature Reading
-// --------------------------------------------------
+        var value = text.toFloatOrNull()
+            ?: return null
 
-    private fun readTemperature(
-        file: File
-    ): Float? {
-
-        val text =
-            readFileSafe(
-                file
-            )
-                ?: return null
-
-
-        var value =
-            text.toFloatOrNull()
-                ?: return null
-
-
-        /*
-         * اکثر thermal zone ها مقدار را
-         * به صورت milli-degree Celsius می‌دهند.
-         *
-         * مثال:
-         *
-         * 42600 -> 42.6
-         */
-
-        if (value > 1000f) {
-
+        if (value > 1000f)
             value /= 1000f
 
-        }
-
-
         return value
-
     }
-
-
 }
