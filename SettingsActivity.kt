@@ -1,8 +1,6 @@
-
 package com.example.meandgpt2
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
@@ -12,166 +10,81 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
-
     private lateinit var thermalReader: ThermalReader
     private lateinit var sensorPreferences: SensorPreferences
 
     private lateinit var spCPU: Spinner
     private lateinit var spGPU: Spinner
-
     private lateinit var sensorContainer: LinearLayout
-
     private lateinit var chkBatteryPercentage: CheckBox
     private lateinit var btnSave: Button
 
-
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
-
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_settings
-        )
-
+        setContentView(R.layout.activity_settings)
         title = "Settings"
 
+        sensorPreferences = SensorPreferences(this)
+        thermalReader = ThermalReader(this)
 
-        sensorPreferences =
-            SensorPreferences(this)
-
-        thermalReader =
-            ThermalReader(this)
-
-
-        spCPU =
-            findViewById(R.id.spCPU)
-
-        spGPU =
-            findViewById(R.id.spGPU)
-
-        sensorContainer =
-            findViewById(R.id.sensorContainer)
-
-        chkBatteryPercentage =
-            findViewById(
-                R.id.chkBatteryPercentage
-            )
-
-        btnSave =
-            findViewById(R.id.btnSave)
-
+        spCPU = findViewById(R.id.spCPU)
+        spGPU = findViewById(R.id.spGPU)
+        sensorContainer = findViewById(R.id.sensorContainer)
+        chkBatteryPercentage = findViewById(R.id.chkBatteryPercentage)
+        btnSave = findViewById(R.id.btnSave)
 
         setupSensorSelectors()
-
         setupSensorCheckboxes()
-
         setupBattery()
 
-
         btnSave.setOnClickListener {
-
             saveSettings()
-
         }
-
     }
 
-
-    // --------------------------------------------------
-    // CPU / GPU
-    // --------------------------------------------------
-
     private fun setupSensorSelectors() {
-
-        val sensors =
-            thermalReader.getSensorList()
-
-        val list =
-            mutableListOf("Auto")
-
+        val sensors = thermalReader.getSensorList()
+        val list = mutableListOf("Auto")
         list.addAll(sensors)
 
-
-        val adapter =
-            ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                list
-            )
-
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            list
+        )
 
         spCPU.adapter = adapter
         spGPU.adapter = adapter
 
-
-        val savedCPU =
-            sensorPreferences.getCpuSensor()
-
-        val savedGPU =
-            sensorPreferences.getGpuSensor()
-
+        val savedCPU = sensorPreferences.getCpuSensor()
+        val savedGPU = sensorPreferences.getGpuSensor()
 
         if (savedCPU != null) {
-
             list.indexOf(savedCPU)
                 .takeIf { it >= 0 }
-                ?.let {
-                    spCPU.setSelection(it)
-                }
-
+                ?.let { spCPU.setSelection(it) }
         }
-
 
         if (savedGPU != null) {
-
             list.indexOf(savedGPU)
                 .takeIf { it >= 0 }
-                ?.let {
-                    spGPU.setSelection(it)
-                }
-
+                ?.let { spGPU.setSelection(it) }
         }
-
     }
 
-
-    // --------------------------------------------------
-    // SENSOR CHECKBOXES
-    // --------------------------------------------------
-
     private fun setupSensorCheckboxes() {
-
         sensorContainer.removeAllViews()
 
-
-        val sensors =
-            thermalReader.getSensorList()
-
-
-        val selected =
-            sensorPreferences
-                .getEnabledSensors()
-
+        val sensors = thermalReader.getSensorList()
+        val selected = sensorPreferences.getEnabledSensors()
 
         for (sensor in sensors) {
+            val checkBox = CheckBox(this)
 
-            val checkBox =
-                CheckBox(this)
-
-
-            checkBox.text =
-                sensor
-
-
-            checkBox.tag =
-                sensor
-
-
-            checkBox.isChecked =
-                selected.contains(sensor)
-
+            checkBox.text = sensor
+            checkBox.tag = sensor
+            checkBox.isChecked = selected.contains(sensor)
 
             sensorContainer.addView(
                 checkBox,
@@ -180,119 +93,52 @@ class SettingsActivity : AppCompatActivity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
             )
-
         }
-
     }
-
-
-    // --------------------------------------------------
-    // BATTERY
-    // --------------------------------------------------
 
     private fun setupBattery() {
-
         chkBatteryPercentage.isChecked =
-            sensorPreferences
-                .isBatteryPercentageEnabled()
-
+            sensorPreferences.isBatteryPercentageEnabled()
     }
 
-
-    // --------------------------------------------------
-    // SAVE
-    // --------------------------------------------------
-
     private fun saveSettings() {
-
-
-        // CPU
-
         val cpuSensor =
             if (spCPU.selectedItemPosition == 0) {
-
                 null
-
             } else {
-
-                spCPU.selectedItem
-                    ?.toString()
-
+                spCPU.selectedItem?.toString()
             }
 
-
-        sensorPreferences.saveCpuSensor(
-            cpuSensor
-        )
-
-
-        // GPU
+        sensorPreferences.saveCpuSensor(cpuSensor)
 
         val gpuSensor =
             if (spGPU.selectedItemPosition == 0) {
-
                 null
-
             } else {
-
-                spGPU.selectedItem
-                    ?.toString()
-
+                spGPU.selectedItem?.toString()
             }
 
+        sensorPreferences.saveGpuSensor(gpuSensor)
 
-        sensorPreferences.saveGpuSensor(
-            gpuSensor
-        )
+        val selectedSensors = mutableSetOf<String>()
 
+        for (i in 0 until sensorContainer.childCount) {
+            val view = sensorContainer.getChildAt(i)
 
-        // Selected sensors
-
-        val selectedSensors =
-            mutableSetOf<String>()
-
-
-        for (
-        i in 0 until sensorContainer.childCount
-        ) {
-
-            val view =
-                sensorContainer.getChildAt(i)
-
-
-            if (view is CheckBox &&
-                view.isChecked
-            ) {
-
-                val sensorName =
-                    view.tag?.toString()
-
+            if (view is CheckBox && view.isChecked) {
+                val sensorName = view.tag?.toString()
 
                 if (!sensorName.isNullOrEmpty()) {
-
-                    selectedSensors.add(
-                        sensorName
-                    )
-
+                    selectedSensors.add(sensorName)
                 }
-
             }
-
         }
 
+        sensorPreferences.saveEnabledSensors(selectedSensors)
 
-        sensorPreferences.saveSelectedSensors(
-            selectedSensors
+        sensorPreferences.saveBatteryPercentageEnabled(
+            chkBatteryPercentage.isChecked
         )
-
-
-        // Battery percentage
-
-        sensorPreferences
-            .saveBatteryPercentageEnabled(
-                chkBatteryPercentage.isChecked
-            )
-
 
         Toast.makeText(
             this,
@@ -300,10 +146,8 @@ class SettingsActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
 
-
         finish()
-
     }
 
-}
 
+}
