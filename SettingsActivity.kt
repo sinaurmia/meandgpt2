@@ -152,7 +152,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val selected =
             sensorPreferences
-                .getSelectedSensors()
+                .getEnabledSensors()
 
 
         for (sensor in sensors) {
