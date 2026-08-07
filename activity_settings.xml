@@ -2,22 +2,19 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sensor Settings"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+        android:orientation="vertical"
+
+        android:padding="16dp">
 
 
         <!-- CPU -->
@@ -25,16 +22,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:text="Main CPU Sensor"
             android:textSize="18sp"
             android:textStyle="bold"/>
 
+
         <Spinner
             android:id="@+id/spCPU"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"/>
+
+            android:layout_marginTop="6dp"/>
 
 
         <!-- GPU -->
@@ -42,16 +42,58 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:text="Main GPU Sensor"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+
+            android:layout_marginTop="16dp"/>
+
 
         <Spinner
             android:id="@+id/spGPU"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"/>
+
+            android:layout_marginTop="6dp"/>
+
+
+        <!-- Additional Sensors -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Sensors to monitor"
+
+            android:textSize="18sp"
+            android:textStyle="bold"
+
+            android:layout_marginTop="24dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Select only the sensors you need. Unselected sensors will not be processed or recorded."
+
+            android:textSize="14sp"
+
+            android:layout_marginTop="4dp"/>
+
+
+        <LinearLayout
+
+            android:id="@+id/sensorContainer"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+
+            android:layout_marginTop="8dp"/>
 
 
         <!-- Battery -->
@@ -59,43 +101,38 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Additional Data"
+
+            android:text="Battery"
+
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+
+            android:layout_marginTop="24dp"/>
+
 
         <CheckBox
-            android:id="@+id/chkBatteryLevel"
+            android:id="@+id/chkBatteryPercentage"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Battery Level (%)"/>
+
+            android:text="Battery percentage"/>
 
 
-        <!-- Sensors -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thermal Sensors"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:id="@+id/sensorContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
+        <!-- Save -->
 
         <Button
             android:id="@+id/btnSave"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:text="SAVE"
+
             android:layout_marginTop="24dp"/>
+
 
     </LinearLayout>
 
 </ScrollView>
+

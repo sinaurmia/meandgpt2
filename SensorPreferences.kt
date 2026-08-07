@@ -1,10 +1,10 @@
+
 package com.example.meandgpt2
 
 import android.content.Context
 
 class SensorPreferences(context: Context) {
 
-    
     private val prefs =
         context.getSharedPreferences(
             "sensor_preferences",
@@ -25,20 +25,18 @@ class SensorPreferences(context: Context) {
         private const val KEY_SENSOR_LIST =
             "sensor_list"
 
-        /*
-         * سنسورهایی که کاربر برای نمایش/ثبت انتخاب کرده است.
-         *
-         * فقط سنسورهای داخل این لیست باید توسط برنامه
-         * در حالت عادی خوانده و ذخیره شوند.
-         */
-        private const val KEY_ENABLED_SENSORS =
-            "enabled_sensors"
+        private const val KEY_SELECTED_SENSORS =
+            "selected_sensors"
+
+        private const val KEY_BATTERY_PERCENTAGE =
+            "battery_percentage"
+
     }
 
 
-// --------------------------------------------------
-// CPU Sensor
-// --------------------------------------------------
+    // --------------------------------------------------
+    // CPU SENSOR
+    // --------------------------------------------------
 
     fun saveCpuSensor(name: String?) {
 
@@ -48,6 +46,7 @@ class SensorPreferences(context: Context) {
                 name
             )
             .apply()
+
     }
 
 
@@ -57,12 +56,13 @@ class SensorPreferences(context: Context) {
             KEY_CPU_SENSOR,
             null
         )
+
     }
 
 
-// --------------------------------------------------
-// GPU Sensor
-// --------------------------------------------------
+    // --------------------------------------------------
+    // GPU SENSOR
+    // --------------------------------------------------
 
     fun saveGpuSensor(name: String?) {
 
@@ -72,6 +72,7 @@ class SensorPreferences(context: Context) {
                 name
             )
             .apply()
+
     }
 
 
@@ -81,12 +82,13 @@ class SensorPreferences(context: Context) {
             KEY_GPU_SENSOR,
             null
         )
+
     }
 
 
-// --------------------------------------------------
-// Refresh Rate
-// --------------------------------------------------
+    // --------------------------------------------------
+    // REFRESH RATE
+    // --------------------------------------------------
 
     fun saveRefreshRate(
         interval: Long
@@ -98,6 +100,7 @@ class SensorPreferences(context: Context) {
                 interval
             )
             .apply()
+
     }
 
 
@@ -107,12 +110,13 @@ class SensorPreferences(context: Context) {
             KEY_REFRESH_RATE,
             5000L
         )
+
     }
 
 
-// --------------------------------------------------
-// Sensor List Cache
-// --------------------------------------------------
+    // --------------------------------------------------
+    // SENSOR CACHE
+    // --------------------------------------------------
 
     fun saveSensorList(
         sensors: Collection<String>
@@ -124,6 +128,7 @@ class SensorPreferences(context: Context) {
                 sensors.toSet()
             )
             .apply()
+
     }
 
 
@@ -136,6 +141,7 @@ class SensorPreferences(context: Context) {
             ?.toList()
             ?.sorted()
             ?: emptyList()
+
     }
 
 
@@ -144,126 +150,105 @@ class SensorPreferences(context: Context) {
         return prefs.contains(
             KEY_SENSOR_LIST
         )
+
     }
 
 
-// --------------------------------------------------
-// Enabled Sensors
-// --------------------------------------------------
+    // --------------------------------------------------
+    // SELECTED SENSORS
+    // --------------------------------------------------
 
-    /*
-     * ذخیره سنسورهایی که کاربر انتخاب کرده است.
-     */
-    fun saveEnabledSensors(
+    fun saveSelectedSensors(
         sensors: Collection<String>
     ) {
 
         prefs.edit()
             .putStringSet(
-                KEY_ENABLED_SENSORS,
+                KEY_SELECTED_SENSORS,
                 sensors.toSet()
             )
             .apply()
+
     }
 
 
-    /*
-     * دریافت سنسورهای انتخاب‌شده.
-     *
-     * اگر هنوز هیچ انتخابی انجام نشده باشد،
-     * یک لیست خالی برمی‌گردد.
-     */
-    fun getEnabledSensors(): Set<String> {
+    fun getSelectedSensors(): Set<String> {
 
         return prefs.getStringSet(
-            KEY_ENABLED_SENSORS,
+            KEY_SELECTED_SENSORS,
             emptySet()
         )
             ?.toSet()
             ?: emptySet()
+
     }
 
 
-    /*
-     * بررسی اینکه یک سنسور فعال شده یا نه.
-     */
-    fun isSensorEnabled(
-        sensorName: String
+    fun isSensorSelected(
+        name: String
     ): Boolean {
 
-        return getEnabledSensors()
-            .contains(sensorName)
+        return getSelectedSensors()
+            .contains(name)
+
     }
 
 
-    /*
-     * فعال یا غیرفعال کردن یک سنسور.
-     */
-    fun setSensorEnabled(
-        sensorName: String,
+    // --------------------------------------------------
+    // BATTERY PERCENTAGE
+    // --------------------------------------------------
+
+    fun saveBatteryPercentageEnabled(
         enabled: Boolean
     ) {
 
-        val sensors =
-            getEnabledSensors()
-                .toMutableSet()
-
-
-        if (enabled) {
-
-            sensors.add(
-                sensorName
-            )
-
-        } else {
-
-            sensors.remove(
-                sensorName
-            )
-
-        }
-
-
-        saveEnabledSensors(
-            sensors
-        )
-    }
-
-
-    /*
-     * حذف تمام انتخاب‌های سنسورها.
-     */
-    fun clearEnabledSensors() {
-
         prefs.edit()
-            .remove(
-                KEY_ENABLED_SENSORS
+            .putBoolean(
+                KEY_BATTERY_PERCENTAGE,
+                enabled
             )
             .apply()
+
     }
 
 
-// --------------------------------------------------
-// Clear Sensor Settings
-// --------------------------------------------------
+    fun isBatteryPercentageEnabled(): Boolean {
+
+        return prefs.getBoolean(
+            KEY_BATTERY_PERCENTAGE,
+            false
+        )
+
+    }
+
+
+    // --------------------------------------------------
+    // CLEAR SENSOR SETTINGS
+    // --------------------------------------------------
+
+    fun clearSensorSettings() {
+
+        prefs.edit()
+            .remove(KEY_SELECTED_SENSORS)
+            .remove(KEY_BATTERY_PERCENTAGE)
+            .remove(KEY_CPU_SENSOR)
+            .remove(KEY_GPU_SENSOR)
+            .apply()
+
+    }
+
+
+    // --------------------------------------------------
+    // CLEAR SENSOR CACHE
+    // --------------------------------------------------
 
     fun clearSensorCache() {
 
         prefs.edit()
-            .remove(
-                KEY_SENSOR_LIST
-            )
-            .remove(
-                KEY_CPU_SENSOR
-            )
-            .remove(
-                KEY_GPU_SENSOR
-            )
-            .remove(
-                KEY_ENABLED_SENSORS
-            )
+            .remove(KEY_SENSOR_LIST)
             .apply()
+
     }
 
-
 }
+
