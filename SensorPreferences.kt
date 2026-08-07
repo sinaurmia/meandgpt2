@@ -118,4 +118,16 @@ class SensorPreferences(context: Context) {
             .putBoolean("battery_percentage_enabled", enabled)
             .apply()
     }
+    fun saveSelectedSensors(sensors: Set<String>) {
+        prefs.edit()
+            .putStringSet("selected_sensors", sensors)
+            .apply()
+    }
+
+    fun getSelectedSensors(): Set<String> {
+        return prefs.getStringSet(
+            "selected_sensors",
+            emptySet()
+        ) ?: emptySet()
+    }
 }
