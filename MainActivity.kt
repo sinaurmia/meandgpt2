@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
@@ -24,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
     private lateinit var txtSensors: TextView
-
     private lateinit var spRefresh: Spinner
     private lateinit var btnSettings: Button
     private lateinit var btnRecording: Button
@@ -37,14 +37,18 @@ class MainActivity : AppCompatActivity() {
 
     private val updateRunnable =
         object : Runnable {
+
             override fun run() {
-                if (updating) {
-                    readTemperatures()
-                    handler.postDelayed(
-                        this,
-                        refreshInterval
-                    )
-                }
+
+                if (!updating)
+                    return
+
+                readTemperatures()
+
+                handler.postDelayed(
+                    this,
+                    refreshInterval
+                )
             }
         }
 
@@ -145,24 +149,25 @@ class MainActivity : AppCompatActivity() {
                 options
             )
 
-        val saved =
-            sensorPreferences.getRefreshRate()
+        refreshInterval =
+            sensorPreferences
+                .getMonitorRefreshRate()
 
-        values.indexOf(saved)
-            .takeIf { it >= 0 }
-            ?.let {
-                spRefresh.setSelection(it)
-            }
+        values.indexOf(
+            refreshInterval
+        ).takeIf {
+            it >= 0
+        }?.let {
+            spRefresh.setSelection(it)
+        }
 
         spRefresh.onItemSelectedListener =
             object :
-                android.widget.AdapterView.OnItemSelectedListener {
+                AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
-                    parent:
-                    android.widget.AdapterView<*>,
-                    view:
-                    android.view.View?,
+                    parent: AdapterView<*>,
+                    view: android.view.View?,
                     position: Int,
                     id: Long
                 ) {
@@ -170,13 +175,13 @@ class MainActivity : AppCompatActivity() {
                     refreshInterval =
                         values[position]
 
-                    sensorPreferences.saveRefreshRate(
-                        refreshInterval
-                    )
+                    sensorPreferences
+                        .saveMonitorRefreshRate(
+                            refreshInterval
+                        )
 
-                    if (updating) {
+                    if (updating)
                         restartUpdater()
-                    }
 
                     Log.d(
                         "MONITOR_RATE",
@@ -185,8 +190,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onNothingSelected(
-                    parent:
-                    android.widget.AdapterView<*>
+                    parent: AdapterView<*>
                 ) {}
             }
     }
@@ -221,6 +225,7 @@ class MainActivity : AppCompatActivity() {
             val sample =
                 thermalReader.readAll()
 
+            // فقط سه سنسور اصلی وارد Statistics می‌شوند.
             statistics.update(sample)
 
             txtCPU.text =
@@ -228,7 +233,8 @@ class MainActivity : AppCompatActivity() {
                     "CPU",
                     sample.cpu,
                     statistics.cpuMin,
-                    statistics.cpuMax
+                    statistics.cpuMax,
+                    statistics.cpuAverage
                 )
 
             txtGPU.text =
@@ -236,7 +242,8 @@ class MainActivity : AppCompatActivity() {
                     "GPU",
                     sample.gpu,
                     statistics.gpuMin,
-                    statistics.gpuMax
+                    statistics.gpuMax,
+                    statistics.gpuAverage
                 )
 
             txtBattery.text =
@@ -244,7 +251,8 @@ class MainActivity : AppCompatActivity() {
                     "Battery",
                     sample.battery,
                     statistics.batteryMin,
-                    statistics.batteryMax
+                    statistics.batteryMax,
+                    statistics.batteryAverage
                 )
 
             val enabled =
@@ -252,10 +260,9 @@ class MainActivity : AppCompatActivity() {
                     .getEnabledSensors()
 
             val extraSensors =
-                sample.sensors
-                    .filterKeys {
-                        enabled.contains(it)
-                    }
+                sample.sensors.filterKeys {
+                    enabled.contains(it)
+                }
 
             txtSensors.text =
                 if (extraSensors.isEmpty()) {
@@ -263,7 +270,8 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     extraSensors.entries
                         .joinToString("\n") {
-                            "${it.key}: ${formatTemperature(it.value)} °C"
+                            "${it.key}: " +
+                                    "${formatTemperature(it.value)} °C"
                         }
                 }
 
@@ -281,18 +289,21 @@ class MainActivity : AppCompatActivity() {
         name: String,
         current: Float?,
         min: Float?,
-        max: Float?
+        max: Float?,
+        average: Float?
     ): String {
 
         return buildString {
 
             append(name)
             append(": ")
+
             append(
                 current?.let {
                     formatTemperature(it)
                 } ?: "--"
             )
+
             append(" °C\n")
 
             append("Min: ")
@@ -306,6 +317,14 @@ class MainActivity : AppCompatActivity() {
             append("Max: ")
             append(
                 max?.let {
+                    formatTemperature(it)
+                } ?: "--"
+            )
+            append(" °C\n")
+
+            append("Average: ")
+            append(
+                average?.let {
                     formatTemperature(it)
                 } ?: "--"
             )
@@ -329,9 +348,11 @@ class MainActivity : AppCompatActivity() {
         txtStatus.text =
             "Monitoring..."
 
-        statistics.reset()
-
         readTemperatures()
+
+        handler.removeCallbacks(
+            updateRunnable
+        )
 
         handler.postDelayed(
             updateRunnable,
@@ -357,15 +378,15 @@ class MainActivity : AppCompatActivity() {
             updateRunnable
         )
 
-        if (updating) {
+        if (!updating)
+            return
 
-            readTemperatures()
+        readTemperatures()
 
-            handler.postDelayed(
-                updateRunnable,
-                refreshInterval
-            )
-        }
+        handler.postDelayed(
+            updateRunnable,
+            refreshInterval
+        )
     }
 
     override fun onResume() {
@@ -375,18 +396,17 @@ class MainActivity : AppCompatActivity() {
         thermalReader.refreshSensorCache()
 
         refreshInterval =
-            sensorPreferences.getRefreshRate()
+            sensorPreferences
+                .getMonitorRefreshRate()
 
-        if (updating) {
-            restartUpdater()
-        }
+        startUpdater()
     }
 
     override fun onPause() {
 
-        super.onPause()
-
         stopUpdater()
+
+        super.onPause()
     }
 
     override fun onDestroy() {
@@ -395,6 +415,4 @@ class MainActivity : AppCompatActivity() {
 
         super.onDestroy()
     }
-
-
 }

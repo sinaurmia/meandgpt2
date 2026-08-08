@@ -12,9 +12,18 @@ class SensorPreferences(context: Context) {
     companion object {
         private const val KEY_CPU_SENSOR = "cpu_sensor"
         private const val KEY_GPU_SENSOR = "gpu_sensor"
+
         private const val KEY_REFRESH_RATE = "refresh_rate"
+        private const val KEY_MONITOR_REFRESH_RATE = "monitor_refresh_rate"
+
         private const val KEY_SENSOR_LIST = "sensor_list"
         private const val KEY_ENABLED_SENSORS = "enabled_sensors"
+
+        private const val KEY_BATTERY_PERCENTAGE =
+            "battery_percentage_enabled"
+
+        private const val KEY_SELECTED_SENSORS =
+            "selected_sensors"
     }
 
     fun saveCpuSensor(name: String?) {
@@ -24,7 +33,10 @@ class SensorPreferences(context: Context) {
     }
 
     fun getCpuSensor(): String? {
-        return prefs.getString(KEY_CPU_SENSOR, null)
+        return prefs.getString(
+            KEY_CPU_SENSOR,
+            null
+        )
     }
 
     fun saveGpuSensor(name: String?) {
@@ -34,22 +46,58 @@ class SensorPreferences(context: Context) {
     }
 
     fun getGpuSensor(): String? {
-        return prefs.getString(KEY_GPU_SENSOR, null)
+        return prefs.getString(
+            KEY_GPU_SENSOR,
+            null
+        )
     }
+
+    // Recording refresh rate
 
     fun saveRefreshRate(interval: Long) {
         prefs.edit()
-            .putLong(KEY_REFRESH_RATE, interval)
+            .putLong(
+                KEY_REFRESH_RATE,
+                interval
+            )
             .apply()
     }
 
     fun getRefreshRate(): Long {
-        return prefs.getLong(KEY_REFRESH_RATE, 5000L)
+        return prefs.getLong(
+            KEY_REFRESH_RATE,
+            5000L
+        )
     }
 
-    fun saveSensorList(sensors: Collection<String>) {
+    // Main monitor refresh rate
+
+    fun saveMonitorRefreshRate(interval: Long) {
         prefs.edit()
-            .putStringSet(KEY_SENSOR_LIST, sensors.toSet())
+            .putLong(
+                KEY_MONITOR_REFRESH_RATE,
+                interval
+            )
+            .apply()
+    }
+
+    fun getMonitorRefreshRate(): Long {
+        return prefs.getLong(
+            KEY_MONITOR_REFRESH_RATE,
+            1000L
+        )
+    }
+
+    // Sensor cache
+
+    fun saveSensorList(
+        sensors: Collection<String>
+    ) {
+        prefs.edit()
+            .putStringSet(
+                KEY_SENSOR_LIST,
+                sensors.toSet()
+            )
             .apply()
     }
 
@@ -57,14 +105,22 @@ class SensorPreferences(context: Context) {
         return prefs.getStringSet(
             KEY_SENSOR_LIST,
             emptySet()
-        )?.toList()?.sorted() ?: emptyList()
+        )?.toList()
+            ?.sorted()
+            ?: emptyList()
     }
 
     fun hasSensorCache(): Boolean {
-        return prefs.contains(KEY_SENSOR_LIST)
+        return prefs.contains(
+            KEY_SENSOR_LIST
+        )
     }
 
-    fun saveEnabledSensors(sensors: Collection<String>) {
+    // Enabled sensors
+
+    fun saveEnabledSensors(
+        sensors: Collection<String>
+    ) {
         prefs.edit()
             .putStringSet(
                 KEY_ENABLED_SENSORS,
@@ -77,15 +133,23 @@ class SensorPreferences(context: Context) {
         return prefs.getStringSet(
             KEY_ENABLED_SENSORS,
             emptySet()
-        )?.toSet() ?: emptySet()
+        )?.toSet()
+            ?: emptySet()
     }
 
-    fun isSensorEnabled(name: String): Boolean {
-        return getEnabledSensors().contains(name)
+    fun isSensorEnabled(
+        name: String
+    ): Boolean {
+        return getEnabledSensors()
+            .contains(name)
     }
 
-    fun setSensorEnabled(name: String, enabled: Boolean) {
-        val sensors = getEnabledSensors().toMutableSet()
+    fun setSensorEnabled(
+        name: String,
+        enabled: Boolean
+    ) {
+        val sensors =
+            getEnabledSensors().toMutableSet()
 
         if (enabled)
             sensors.add(name)
@@ -110,26 +174,43 @@ class SensorPreferences(context: Context) {
             .apply()
     }
 
-    fun setBatteryPercentageEnabled(enabled: Boolean) {
+    // Selected sensors
+
+    fun saveSelectedSensors(
+        sensors: Set<String>
+    ) {
         prefs.edit()
-            .putBoolean("battery_percentage_enabled", enabled)
-            .apply()
-    }
-    fun saveSelectedSensors(sensors: Set<String>) {
-        prefs.edit()
-            .putStringSet("selected_sensors", sensors)
+            .putStringSet(
+                KEY_SELECTED_SENSORS,
+                sensors
+            )
             .apply()
     }
 
     fun getSelectedSensors(): Set<String> {
         return prefs.getStringSet(
-            "selected_sensors",
+            KEY_SELECTED_SENSORS,
             emptySet()
-        ) ?: emptySet()
+        )?.toSet()
+            ?: emptySet()
     }
+
+    // Battery percentage
+
+    fun setBatteryPercentageEnabled(
+        enabled: Boolean
+    ) {
+        prefs.edit()
+            .putBoolean(
+                KEY_BATTERY_PERCENTAGE,
+                enabled
+            )
+            .apply()
+    }
+
     fun isBatteryPercentageEnabled(): Boolean {
         return prefs.getBoolean(
-            "battery_percentage_enabled",
+            KEY_BATTERY_PERCENTAGE,
             false
         )
     }
@@ -137,11 +218,6 @@ class SensorPreferences(context: Context) {
     fun saveBatteryPercentageEnabled(
         enabled: Boolean
     ) {
-        prefs.edit()
-            .putBoolean(
-                "battery_percentage_enabled",
-                enabled
-            )
-            .apply()
+        setBatteryPercentageEnabled(enabled)
     }
 }

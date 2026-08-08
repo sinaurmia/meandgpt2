@@ -133,26 +133,26 @@ class RecordingActivity : AppCompatActivity() {
                 android.widget.AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
-                    parent:
-                    android.widget.AdapterView<*>,
-                    view:
-                    android.view.View?,
+                    parent: android.widget.AdapterView<*>,
+                    view: android.view.View?,
                     position: Int,
                     id: Long
                 ) {
 
-                    recorder.setInterval(
+                    val interval =
                         values[position]
+
+                    recorder.setInterval(
+                        interval
                     )
 
                     sensorPreferences.saveRefreshRate(
-                        values[position]
+                        interval
                     )
                 }
 
                 override fun onNothingSelected(
-                    parent:
-                    android.widget.AdapterView<*>
+                    parent: android.widget.AdapterView<*>
                 ) {}
             }
     }
