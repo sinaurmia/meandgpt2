@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity() {
 
             val enabled =
                 sensorPreferences
-                    .getEnabledSensors()
+                    .getSelectedSensors()
 
             val extraSensors =
                 sample.sensors.filterKeys {

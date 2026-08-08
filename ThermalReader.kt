@@ -153,8 +153,24 @@ class ThermalReader(
                 val isSelectedSensor =
                     enabledSensors.contains(sensor.name)
 
+                val isSelectedCpu =
+                    selectedCpu != null &&
+                            sensor.name.equals(
+                                selectedCpu,
+                                true
+                            )
+
+                val isSelectedGpu =
+                    selectedGpu != null &&
+                            sensor.name.equals(
+                                selectedGpu,
+                                true
+                            )
+
                 val shouldRead =
                     isSelectedSensor ||
+                            isSelectedCpu ||
+                            isSelectedGpu ||
                             sensorType == SensorType.CPU ||
                             sensorType == SensorType.GPU ||
                             sensorType == SensorType.BATTERY
