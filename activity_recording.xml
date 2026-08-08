@@ -84,6 +84,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Export CSV"/>
+        <Button
+            android:id="@+id/btnSaveCsv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save CSV"/>
 
     </LinearLayout>
 
