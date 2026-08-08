@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,13 +58,36 @@
         android:text="Stopped"
         android:textSize="18sp"
         android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/txtCPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="CPU: --"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/txtGPU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="GPU: --"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/txtBattery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Battery: --"
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/txtCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="Samples: 0"/>
+        android:text="Samples: --"/>
 
     <LinearLayout
         android:layout_width="match_parent"
