@@ -77,7 +77,7 @@ class SettingsActivity : AppCompatActivity() {
         sensorContainer.removeAllViews()
 
         val sensors = thermalReader.getSensorList()
-        val selected = sensorPreferences.getEnabledSensors()
+        val selected = sensorPreferences.getSelectedSensors()
 
         for (sensor in sensors) {
             val checkBox = CheckBox(this)
@@ -134,7 +134,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        sensorPreferences.saveEnabledSensors(selectedSensors)
+        sensorPreferences.saveSelectedSensors(selectedSensors)
 
         sensorPreferences.saveBatteryPercentageEnabled(
             chkBatteryPercentage.isChecked

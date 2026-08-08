@@ -142,7 +142,7 @@ class ThermalReader(
         val selectedGpu =
             preferences.getGpuSensor()
 
-        val enabledSensors =
+        val selectedSensors =
             preferences.getSelectedSensors()
 
         for (sensor in list) {
@@ -151,7 +151,7 @@ class ThermalReader(
                     detectSensor(sensor.name)
 
                 val isSelectedSensor =
-                    enabledSensors.contains(sensor.name)
+                    selectedSensors.contains(sensor.name)
 
                 val isSelectedCpu =
                     selectedCpu != null &&
