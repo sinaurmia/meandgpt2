@@ -10,10 +10,11 @@ data class Sample(
     val gpu: Float?,
     val gpuSensorName: String?,
     val battery: Float?,
+    val batteryPercentage: Int?,
     val sensors: MutableMap<String, Float>
 ) : Serializable {
-
     companion object {
         private const val serialVersionUID = 1L
     }
 }
+
