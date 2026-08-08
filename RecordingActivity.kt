@@ -423,7 +423,6 @@ class RecordingActivity : AppCompatActivity() {
     private fun exportCsv() {
         val exporter =
             CsvExporter(this)
-
         val file =
             exporter.export(
                 storage.getAll()
@@ -447,19 +446,23 @@ class RecordingActivity : AppCompatActivity() {
             )
 
         val intent =
-            Intent(Intent.ACTION_SEND)
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
 
-        intent.type =
-            "text/csv"
+                putExtra(
+                    Intent.EXTRA_STREAM,
+                    uri
+                )
 
-        intent.putExtra(
-            Intent.EXTRA_STREAM,
-            uri
-        )
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Temperature log: ${file.name}"
+                )
 
-        intent.addFlags(
-            Intent.FLAG_GRANT_READ_URI_PERMISSION
-        )
+                addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            }
 
         startActivity(
             Intent.createChooser(
@@ -467,7 +470,10 @@ class RecordingActivity : AppCompatActivity() {
                 "Export CSV"
             )
         )
+
+
     }
+
 
     override fun onResume() {
         super.onResume()
