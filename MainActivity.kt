@@ -3,6 +3,7 @@ package com.example.meandgpt2
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -29,17 +30,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSettings: Button
     private lateinit var btnRecording: Button
 
-    private val handler =
-        Handler(mainLooper)
+    private lateinit var handler: Handler
+    private lateinit var updateRunnable: Runnable
 
     private var refreshInterval = 1000L
     private var updating = false
 
-    private val updateRunnable =
-        object : Runnable {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
+        handler = Handler(Looper.getMainLooper())
+
+        updateRunnable = object : Runnable {
             override fun run() {
-
                 if (!updating)
                     return
 
@@ -52,16 +55,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
-        super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
 
-        setContentView(
-            R.layout.activity_main
-        )
+        setContentView(R.layout.activity_main)
 
         ViewCompat.setOnApplyWindowInsetsListener(
             findViewById(R.id.main)
@@ -123,7 +119,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRefreshRate() {
-
         val options =
             listOf(
                 "1 Second",
@@ -162,8 +157,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         spRefresh.onItemSelectedListener =
-            object :
-                AdapterView.OnItemSelectedListener {
+            object : AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
                     parent: AdapterView<*>,
@@ -171,7 +165,6 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-
                     refreshInterval =
                         values[position]
 
@@ -196,9 +189,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-
         btnSettings.setOnClickListener {
-
             startActivity(
                 Intent(
                     this,
@@ -208,7 +199,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRecording.setOnClickListener {
-
             startActivity(
                 Intent(
                     this,
@@ -219,9 +209,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun readTemperatures() {
-
         try {
-
             val sample =
                 thermalReader.readAll()
 
@@ -270,13 +258,11 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     extraSensors.entries
                         .joinToString("\n") {
-                            "${it.key}: " +
-                                    "${formatTemperature(it.value)} °C"
+                            "${it.key}: ${formatTemperature(it.value)} °C"
                         }
                 }
 
         } catch (e: Exception) {
-
             Log.e(
                 "MONITOR",
                 "Read failed",
@@ -292,9 +278,7 @@ class MainActivity : AppCompatActivity() {
         max: Float?,
         average: Float?
     ): String {
-
         return buildString {
-
             append(name)
             append(": ")
 
@@ -339,7 +323,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startUpdater() {
-
         if (updating)
             return
 
@@ -361,7 +344,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopUpdater() {
-
         updating = false
 
         handler.removeCallbacks(
@@ -373,7 +355,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restartUpdater() {
-
         handler.removeCallbacks(
             updateRunnable
         )
@@ -390,7 +371,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-
         super.onResume()
 
         thermalReader.refreshSensorCache()
@@ -403,16 +383,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-
         stopUpdater()
 
         super.onPause()
     }
 
     override fun onDestroy() {
-
         stopUpdater()
 
         super.onDestroy()
     }
 }
+
