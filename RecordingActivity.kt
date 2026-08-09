@@ -678,7 +678,7 @@ class RecordingActivity : AppCompatActivity() {
 
         val sensors =
             sensorPreferences
-                .getEnabledSensors()
+                .getSelectedSensors()
                 .sorted()
 
         addTableHeader(sensors)
@@ -686,8 +686,9 @@ class RecordingActivity : AppCompatActivity() {
         if (logs.isEmpty()) {
             addEmptyRow()
         } else {
-            logs.reversed().forEach { sample ->
+            logs.reversed().forEachIndexed { index, sample ->
                 addTableRow(
+                    index + 1,
                     sample,
                     sensors
                 )
@@ -710,30 +711,35 @@ class RecordingActivity : AppCompatActivity() {
     private fun addTableHeader(
         sensors: List<String>
     ) {
-        val row =
-            TableRow(this)
+        val row = TableRow(this)
 
         addCell(
             row,
-            "Date",
+            "#",
             true
         )
 
         addCell(
             row,
-            "CPU",
+            "Time",
             true
         )
 
         addCell(
             row,
-            "GPU",
+            "CPU (°C)",
             true
         )
 
         addCell(
             row,
-            "Battery",
+            "GPU (°C)",
+            true
+        )
+
+        addCell(
+            row,
+            "Battery (°C)",
             true
         )
 
@@ -748,12 +754,17 @@ class RecordingActivity : AppCompatActivity() {
         logTable.addView(row)
     }
     private fun addTableRow(
+        rowNumber: Int,
         sample: Sample,
         sensors: List<String>
     ) {
         val row =
             TableRow(this)
 
+        addCell(
+            row,
+            rowNumber.toString()
+        )
         addCell(
             row,
             sample.date
@@ -799,20 +810,28 @@ class RecordingActivity : AppCompatActivity() {
         text: String,
         header: Boolean = false
     ) {
-        val cell =
-            TextView(this)
+        val cell = TextView(this)
 
         cell.text = text
         cell.gravity = Gravity.CENTER
+
         cell.setPadding(
-            16,
             10,
-            16,
-            10
+            8,
+            10,
+            8
         )
 
         cell.textSize =
-            if (header) 13f else 12f
+            if (header) 11f else 10f
+
+        cell.setTextColor(
+            if (header) {
+                getColor(R.color.primary_blue)
+            } else {
+                getColor(R.color.table_text)
+            }
+        )
 
         if (header) {
             cell.setTypeface(
@@ -820,6 +839,19 @@ class RecordingActivity : AppCompatActivity() {
                 android.graphics.Typeface.BOLD
             )
         }
+
+        cell.background =
+            android.graphics.drawable.GradientDrawable().apply {
+
+                setColor(
+                    android.graphics.Color.TRANSPARENT
+                )
+
+                setStroke(
+                    1,
+                    getColor(R.color.table_border)
+                )
+            }
 
         cell.layoutParams =
             TableRow.LayoutParams(
@@ -829,6 +861,7 @@ class RecordingActivity : AppCompatActivity() {
 
         row.addView(cell)
     }
+
     private fun addEmptyRow() {
         val row =
             TableRow(this)
