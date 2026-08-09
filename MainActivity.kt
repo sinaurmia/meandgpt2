@@ -36,8 +36,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sensorPreferences: SensorPreferences
     private lateinit var statistics: Statistics
 
-    private lateinit var txtStatus: TextView
-
     private lateinit var txtCPU: TextView
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
@@ -141,8 +139,6 @@ class MainActivity : AppCompatActivity() {
         statistics =
             Statistics()
 
-        txtStatus =
-            findViewById(R.id.txtStatus)
 
         txtCPU =
             findViewById(R.id.txtCPU)
@@ -182,8 +178,6 @@ class MainActivity : AppCompatActivity() {
         setupRefreshRate()
         setupButtons()
 
-        txtStatus.text =
-            "Monitoring stopped"
 
         clearSensorTable()
     }
@@ -876,8 +870,6 @@ class MainActivity : AppCompatActivity() {
 
         updating = true
 
-        txtStatus.text =
-            "Monitoring..."
 
         readTemperatures()
 
@@ -899,8 +891,6 @@ class MainActivity : AppCompatActivity() {
             updateRunnable
         )
 
-        txtStatus.text =
-            "Monitoring stopped"
     }
 
     private fun restartUpdater() {
