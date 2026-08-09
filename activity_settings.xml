@@ -39,7 +39,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?android:attr/textColorSecondary"
+        android:background="@color/divider"
         android:alpha="0.25"/>
 
     <ScrollView
@@ -153,7 +153,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="38dp"
-            android:background="?android:attr/textColorSecondary"
+            android:background="@color/divider"
             android:alpha="0.25"/>
 
         <Button

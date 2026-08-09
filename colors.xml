@@ -23,5 +23,6 @@
     <color name="temperature_max">#E53935</color>
     <color name="temperature_min">#1677FF</color>
     <color name="temperature_average">#888888</color>
+    <color name="divider">#40000000</color>
 
 </resources>
