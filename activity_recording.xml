@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="12dp">
 
-    <!-- Page title -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="52dp"
@@ -17,7 +16,6 @@
         android:textSize="22sp"
         android:textStyle="bold"/>
 
-    <!-- Refresh rate -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -39,219 +37,207 @@
 
     </LinearLayout>
 
-    <!-- Main recording temperatures -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <!-- CPU -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:layout_marginTop="4dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
             <LinearLayout
-                android:layout_width="92dp"
-                android:layout_height="match_parent"
-                android:background="#03A9F4"
-                android:padding="2dp">
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txtCPU"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="92dp"
                     android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
-                    android:gravity="center"
-                    android:text="CPU: --"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:background="#03A9F4"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/txtCPU"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?android:attr/colorBackground"
+                        android:gravity="center"
+                        android:text="CPU: --"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="4dp">
+
+                <LinearLayout
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:background="#03A9F4"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/txtGPU"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?android:attr/colorBackground"
+                        android:gravity="center"
+                        android:text="GPU: --"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="4dp">
+
+                <LinearLayout
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:background="#03A9F4"
+                    android:padding="2dp">
+
+                    <TextView
+                        android:id="@+id/txtBattery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?android:attr/colorBackground"
+                        android:gravity="center"
+                        android:text="Battery: --"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <TextView
-                android:layout_width="4dp"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
-
-        <!-- GPU -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:layout_marginTop="4dp">
-
-            <LinearLayout
-                android:layout_width="92dp"
-                android:layout_height="match_parent"
-                android:background="#03A9F4"
-                android:padding="2dp">
-
-                <TextView
-                    android:id="@+id/txtGPU"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
-                    android:gravity="center"
-                    android:text="GPU: --"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Battery -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:layout_marginTop="4dp">
-
-            <LinearLayout
-                android:layout_width="92dp"
-                android:layout_height="match_parent"
-                android:background="#03A9F4"
-                android:padding="2dp">
-
-                <TextView
-                    android:id="@+id/txtBattery"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
-                    android:gravity="center"
-                    android:text="Battery: --"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Status -->
-        <TextView
-            android:id="@+id/txtStatus"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center_vertical"
-            android:text="Stopped"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
-
-        <!-- Counters -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/txtCount"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Samples: --"
+                android:id="@+id/txtStatus"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="Stopped"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/txtTotalRows"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Total Rows: 0"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txtCount"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Samples: --"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
 
-        <!-- Recording buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/txtTotalRows"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Total Rows: 0"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/btnStart"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="START"/>
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/btnStop"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="STOP"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnReset"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="RESET"/>
+                <Button
+                    android:id="@+id/btnStart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="START"/>
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btnStop"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="STOP"/>
 
-        <!-- Log buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btnReset"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="RESET"/>
 
-            <Button
-                android:id="@+id/btnShowLog"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Show Log"/>
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/btnExport"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Export CSV"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btnShowLog"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Show Log"/>
 
-        <!-- Log area -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="6dp">
+                <Button
+                    android:id="@+id/btnExport"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Export CSV"/>
 
+            </LinearLayout>
+
+            <!-- Log table -->
             <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fillViewport="false">
 
-                <TextView
-                    android:id="@+id/txtLog"
+                <TableLayout
+                    android:id="@+id/logTable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="500dp"
-                    android:padding="4dp"
-                    android:textSize="12sp"
-                    android:typeface="monospace"/>
+                    android:stretchColumns="0"/>
 
             </HorizontalScrollView>
 
-        </ScrollView>
+        </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-    <!-- Bottom navigation -->
+    <!-- Fixed bottom navigation -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="54dp"
         android:layout_marginTop="6dp"
-        android:orientation="horizontal"
         android:background="#03A9F4"
-        android:padding="2dp">
+        android:padding="2dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnMonitoring"

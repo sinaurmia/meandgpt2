@@ -11,6 +11,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import android.graphics.Color
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.TableRow
+
 
 class RecordingActivity : AppCompatActivity() {
 
@@ -26,8 +31,11 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
     private lateinit var txtCount: TextView
-    private lateinit var txtLog: TextView
+    private lateinit var logTable: TableLayout
+    private lateinit var txtTotalRows: TextView
 
+    private lateinit var btnMonitoring: Button
+    private lateinit var btnSettings: Button
     private lateinit var btnStart: Button
     private lateinit var btnStop: Button
     private lateinit var btnReset: Button
@@ -78,8 +86,14 @@ class RecordingActivity : AppCompatActivity() {
         txtCPU = findViewById(R.id.txtCPU)
         txtGPU = findViewById(R.id.txtGPU)
         txtBattery = findViewById(R.id.txtBattery)
-        txtCount = findViewById(R.id.txtCount)
-        txtLog = findViewById(R.id.txtLog)
+        txtCount =
+            findViewById(R.id.txtCount)
+
+        txtTotalRows =
+            findViewById(R.id.txtTotalRows)
+
+        logTable =
+            findViewById(R.id.logTable)
 
         btnStart = findViewById(R.id.btnStart)
         btnStop = findViewById(R.id.btnStop)
@@ -87,6 +101,11 @@ class RecordingActivity : AppCompatActivity() {
         btnShowLog = findViewById(R.id.btnShowLog)
         btnExport = findViewById(R.id.btnExport)
 
+        btnMonitoring =
+            findViewById(R.id.btnMonitoring)
+
+        btnSettings =
+            findViewById(R.id.btnSettings)
         setupRefreshRate()
         setupButtons()
         clearRecordingDisplay()
@@ -174,6 +193,24 @@ class RecordingActivity : AppCompatActivity() {
         btnExport.setOnClickListener {
             exportCsv()
         }
+        btnMonitoring.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    MainActivity::class.java
+                )
+            )
+            finish()
+        }
+
+        btnSettings.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
+                )
+            )
+        }
     }
 
     private fun startRecording() {
@@ -249,6 +286,8 @@ class RecordingActivity : AppCompatActivity() {
         val sample = storage.getLast()
 
         val currentCount = storage.count()
+        txtTotalRows.text =
+            "Total Rows: $currentCount"
 
         val sessionCount =
             currentCount - recordingStartCount
@@ -337,6 +376,8 @@ class RecordingActivity : AppCompatActivity() {
 
         txtCount.text =
             "Samples: --"
+        txtTotalRows.text =
+            "Total Rows: ${storage.count()}"
     }
 
     private fun clearTemperatureDisplays() {
@@ -362,64 +403,140 @@ class RecordingActivity : AppCompatActivity() {
     }
 
     private fun showLog() {
+        logTable.removeAllViews()
+
         val logs =
             storage.getLastRecords(500)
 
-        val builder =
-            StringBuilder()
+        val sensors =
+            sensorPreferences
+                .getEnabledSensors()
+                .sorted()
 
-        for (sample in logs) {
-            builder.append(
-                "Date: ${sample.date}\n"
-            )
+        addTableHeader(sensors)
 
-            builder.append(
-                "CPU: ${sample.cpu ?: "--"} "
-            )
-
-            builder.append(
-                "GPU: ${sample.gpu ?: "--"} "
-            )
-
-            builder.append(
-                "BAT: ${sample.battery ?: "--"}\n"
-            )
-
-            if (sample.sensors.isNotEmpty()) {
-                builder.append(
-                    "Sensors: "
+        if (logs.isEmpty()) {
+            addEmptyRow()
+        } else {
+            logs.reversed().forEach { sample ->
+                addTableRow(
+                    sample,
+                    sensors
                 )
-
-                builder.append(
-                    sample.sensors.entries
-                        .joinToString(" | ") {
-                            "${it.key}:${it.value}"
-                        }
-                )
-
-                builder.append("\n")
             }
-
-            builder.append(
-                "----------------------\n"
-            )
         }
-
-        txtLog.text =
-            if (builder.isEmpty())
-                "No records"
-            else
-                builder.toString()
 
         txtCount.text =
             "Samples: ${
                 maxOf(
                     0,
-                    storage.count() - recordingStartCount
+                    storage.count() -
+                            recordingStartCount
                 )
             }"
+
+        txtTotalRows.text =
+            "Total Rows: ${storage.count()}"
     }
 
+    private fun addTableHeader(
+        sensors: List<String>
+    ) {
+        val row =
+            TableRow(this)
+
+        addCell(
+            row,
+            "Date",
+            true
+        )
+
+        addCell(
+            row,
+            "CPU",
+            true
+        )
+
+        addCell(
+            row,
+            "GPU",
+            true
+        )
+
+        addCell(
+            row,
+            "Battery",
+            true
+        )
+
+        for (sensor in sensors) {
+            addCell(
+                row,
+                sensor,
+                true
+            )
+        }
+
+        logTable.addView(row)
+    }
+    private fun addTableRow(
+        sample: Sample,
+        sensors: List<String>
+    ) {
+        val row =
+            TableRow(this)
+
+        addCell(
+            row,
+            sample.date
+        )
+
+        addCell(
+            row,
+            sample.cpu?.let {
+                formatTemperature(it)
+            } ?: ""
+        )
+
+        addCell(
+            row,
+            sample.gpu?.let {
+                formatTemperature(it)
+            } ?: ""
+        )
+
+        addCell(
+            row,
+            sample.battery?.let {
+                formatTemperature(it)
+            } ?: ""
+        )
+
+        for (sensor in sensors) {
+            val value =
+                sample.sensors[sensor]
+
+            addCell(
+                row,
+                value?.let {
+                    formatTemperature(it)
+                } ?: ""
+            )
+        }
+
+        logTable.addView(row)
+    }
+    private fun addEmptyRow() {
+        val row =
+            TableRow(this)
+
+        addCell(
+            row,
+            "No records"
+        )
+
+        logTable.addView(row)
+    }
     private fun exportCsv() {
         val exporter =
             CsvExporter(this)

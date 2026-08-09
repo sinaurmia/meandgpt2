@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="12dp">
 
-    <!-- Page title -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="52dp"
@@ -17,7 +16,6 @@
         android:textSize="22sp"
         android:textStyle="bold"/>
 
-    <!-- Refresh rate -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -39,7 +37,6 @@
 
     </LinearLayout>
 
-    <!-- Status -->
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"
@@ -49,7 +46,6 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
-    <!-- Main temperatures -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -59,9 +55,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-            <!-- CPU -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
@@ -81,7 +77,6 @@
 
             </LinearLayout>
 
-            <!-- GPU -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
@@ -101,7 +96,6 @@
 
             </LinearLayout>
 
-            <!-- Battery -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
@@ -121,7 +115,6 @@
 
             </LinearLayout>
 
-            <!-- Additional sensors -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
@@ -143,14 +136,14 @@
 
     </ScrollView>
 
-    <!-- Bottom navigation -->
+    <!-- Fixed bottom navigation -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="54dp"
         android:layout_marginTop="6dp"
-        android:orientation="horizontal"
         android:background="#03A9F4"
-        android:padding="2dp">
+        android:padding="2dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnRecording"

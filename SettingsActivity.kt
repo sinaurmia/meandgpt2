@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var btnBack: Button
     private lateinit var thermalReader: ThermalReader
     private lateinit var sensorPreferences: SensorPreferences
 
@@ -33,6 +34,8 @@ class SettingsActivity : AppCompatActivity() {
         sensorContainer = findViewById(R.id.sensorContainer)
         chkBatteryPercentage = findViewById(R.id.chkBatteryPercentage)
         btnSave = findViewById(R.id.btnSave)
+        btnBack =
+            findViewById(R.id.btnBack)
 
         setupSensorSelectors()
         setupSensorCheckboxes()
@@ -40,6 +43,9 @@ class SettingsActivity : AppCompatActivity() {
 
         btnSave.setOnClickListener {
             saveSettings()
+        }
+        btnBack.setOnClickListener {
+            finish()
         }
     }
 

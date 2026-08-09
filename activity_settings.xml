@@ -1,138 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-
-    <LinearLayout
-
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="vertical"
-
-        android:padding="16dp">
-
-
-        <!-- CPU -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Main CPU Sensor"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-
-        <Spinner
-            android:id="@+id/spCPU"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="6dp"/>
-
-
-        <!-- GPU -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Main GPU Sensor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-
-            android:layout_marginTop="16dp"/>
-
-
-        <Spinner
-            android:id="@+id/spGPU"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="6dp"/>
-
-
-        <!-- Additional Sensors -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Sensors to monitor"
-
-            android:textSize="18sp"
-            android:textStyle="bold"
-
-            android:layout_marginTop="24dp"/>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Select only the sensors you need. Unselected sensors will not be processed or recorded."
-
-            android:textSize="14sp"
-
-            android:layout_marginTop="4dp"/>
-
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
-
-            android:id="@+id/sensorContainer"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingBottom="20dp">
 
-            android:layout_marginTop="8dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Main CPU Sensor"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
+            <Spinner
+                android:id="@+id/spCPU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"/>
 
-        <!-- Battery -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Main GPU Sensor"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <Spinner
+                android:id="@+id/spGPU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"/>
 
-            android:text="Battery"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Sensors to monitor"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-            android:textSize="18sp"
-            android:textStyle="bold"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Select only the sensors you need. Unselected sensors will not be processed or recorded."
+                android:textSize="14sp"/>
 
-            android:layout_marginTop="24dp"/>
+            <LinearLayout
+                android:id="@+id/sensorContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Battery"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-        <CheckBox
-            android:id="@+id/chkBatteryPercentage"
+            <CheckBox
+                android:id="@+id/chkBatteryPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Battery percentage"/>
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        </LinearLayout>
 
-            android:text="Battery percentage"/>
+    </ScrollView>
 
+    <!-- Fixed bottom buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="#03A9F4"
+        android:padding="2dp"
+        android:orientation="horizontal">
 
-        <!-- Save -->
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="BACK"/>
 
         <Button
             android:id="@+id/btnSave"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="SAVE"
-
-            android:layout_marginTop="24dp"/>
-
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="SAVE"/>
 
     </LinearLayout>
 
-</ScrollView>
-
+</LinearLayout>
