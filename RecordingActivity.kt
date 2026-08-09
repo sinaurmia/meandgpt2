@@ -28,6 +28,7 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var recorder: Recorder
     private lateinit var statistics: Statistics
     private lateinit var sensorPreferences: SensorPreferences
+    private lateinit var btnMenu: TextView
 
     private lateinit var spRefresh: Spinner
     private lateinit var txtStatus: TextView
@@ -96,6 +97,7 @@ class RecordingActivity : AppCompatActivity() {
         txtCPUStats = findViewById(R.id.txtCPUStats)
         txtGPUStats = findViewById(R.id.txtGPUStats)
         txtBatteryStats = findViewById(R.id.txtBatteryStats)
+        btnMenu = findViewById(R.id.btnMenu)
         txtCount =
             findViewById(R.id.txtCount)
 
@@ -212,7 +214,7 @@ class RecordingActivity : AppCompatActivity() {
             finish()
         }
 
-        btnSettings.setOnClickListener {
+        btnMenu.setOnClickListener {
             startActivity(
                 Intent(
                     this,

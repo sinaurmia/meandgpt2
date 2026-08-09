@@ -429,6 +429,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:background="@android:color/transparent"
+            android:enabled="false"
             android:text="●&#10;RECORD"
             android:textColor="@color/primary_blue"
             android:textSize="12sp"
