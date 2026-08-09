@@ -6,106 +6,166 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="10dp">
 
+    <!-- Page title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center"
+        android:text="Temperature Monitor"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
+
+    <!-- Refresh rate -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/btnSettings"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Settings"/>
+            android:text="Refresh Rate"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/btnRecording"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Recording"/>
+        <Spinner
+            android:id="@+id/spRefresh"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Monitor Refresh Rate"
-        android:textStyle="bold"/>
-
-    <Spinner
-        android:id="@+id/spRefresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"/>
-
+    <!-- Status -->
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="32dp"
+        android:gravity="center_vertical"
         android:text="Monitoring stopped"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"/>
 
+    <!-- Main temperatures -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtCPU"
+            <!-- CPU -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="105dp"
+                android:layout_marginTop="6dp"
+                android:background="#03A9F4"
+                android:padding="2dp">
+
+                <TextView
+                    android:id="@+id/txtCPU"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/colorBackground"
+                    android:gravity="center"
+                    android:text="CPU: --"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!-- GPU -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="105dp"
                 android:layout_marginTop="8dp"
-                android:text="CPU: --"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:background="#03A9F4"
+                android:padding="2dp">
 
-            <TextView
-                android:id="@+id/txtGPU"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="GPU: --"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtGPU"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/colorBackground"
+                    android:gravity="center"
+                    android:text="GPU: --"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/txtBattery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Battery: --"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+            </LinearLayout>
 
+            <!-- Battery -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="105dp"
+                android:layout_marginTop="8dp"
+                android:background="#03A9F4"
+                android:padding="2dp">
+
+                <TextView
+                    android:id="@+id/txtBattery"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/colorBackground"
+                    android:gravity="center"
+                    android:text="Battery: --"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!-- Additional sensors -->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
                 android:text="Additional Sensors"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txtSensors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:padding="4dp"
                 android:text="No additional sensors selected"
                 android:textSize="14sp"/>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <!-- Bottom navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:background="#03A9F4"
+        android:padding="2dp">
+
+        <Button
+            android:id="@+id/btnRecording"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Recording"/>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Settings"/>
+
+    </LinearLayout>
 
 </LinearLayout>
