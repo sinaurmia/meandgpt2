@@ -1,264 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?android:attr/colorBackground">
 
     <!-- Header -->
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="?android:attr/colorBackground">
-
-        <Space
-            android:layout_width="48dp"
-            android:layout_height="match_parent" />
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:background="?android:attr/colorBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
+            android:id="@+id/txtTitle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="Monitor"
-            android:textColor="?android:attr/textColorPrimary"
+            android:text="Monitoring"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"/>
 
         <TextView
-            android:id="@+id/txtMenu"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="⋮"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="28sp" />
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="READY"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorSecondary"/>
 
     </LinearLayout>
+
+    <!-- Header divider -->
 
     <View
-        android:layout_width="match_parent"
+        android:id="@+id/headerDivider"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="?android:attr/textColorSecondary"
-        android:alpha="0.25" />
+        android:background="@color/light_border"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Refresh rate -->
+
+    <!-- Temperature cards -->
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp">
+        android:id="@+id/temperatureContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Refresh Rate"
-            android:textColor="@color/primary_blue"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spRefresh"
-            android:layout_width="210dp"
-            android:layout_height="42dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
-
-    </LinearLayout>
-
-    <!-- Status is kept for MainActivity -->
-    <TextView
-        android:id="@+id/txtStatus"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:text="Monitoring stopped" />
-
-    <!-- Scrollable content -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true"
-        android:clipToPadding="false">
+        <!-- CPU -->
 
         <LinearLayout
+            android:id="@+id/cpuCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="20dp">
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_temperature_card">
 
-            <!-- CPU -->
-            <LinearLayout
-                android:id="@+id/cardCPU"
-                android:layout_width="match_parent"
-                android:layout_height="105dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_temperature_card">
-
-                <TextView
-                    android:id="@+id/txtCPU"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="--&#10;CPU"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/primary_blue" />
-
-                <TextView
-                    android:id="@+id/txtCPUStats"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <!-- GPU -->
-            <LinearLayout
-                android:id="@+id/cardGPU"
-                android:layout_width="match_parent"
-                android:layout_height="105dp"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_temperature_card">
-
-                <TextView
-                    android:id="@+id/txtGPU"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="--&#10;GPU"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/primary_blue" />
-
-                <TextView
-                    android:id="@+id/txtGPUStats"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <!-- Battery -->
-            <LinearLayout
-                android:id="@+id/cardBattery"
-                android:layout_width="match_parent"
-                android:layout_height="105dp"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_temperature_card">
-
-                <TextView
-                    android:id="@+id/txtBattery"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="--&#10;Battery"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/primary_blue" />
-
-                <TextView
-                    android:id="@+id/txtBatteryStats"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <!-- Additional Sensors -->
-            <TableLayout
-                android:id="@+id/txtSensors"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/txtCPU"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:stretchColumns="0"
-                android:shrinkColumns="0" />
+                android:layout_weight="1"
+                android:text="CPU"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/txtCPUTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- °C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
 
         </LinearLayout>
 
-    </ScrollView>
+        <!-- GPU -->
 
-    <!-- Fixed bottom navigation -->
+        <LinearLayout
+            android:id="@+id/gpuCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_temperature_card">
+
+            <TextView
+                android:id="@+id/txtGPU"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GPU"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/txtGPUTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- °C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+        </LinearLayout>
+
+        <!-- Battery -->
+
+        <LinearLayout
+            android:id="@+id/batteryCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_temperature_card">
+
+            <TextView
+                android:id="@+id/txtBattery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Battery"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/txtBatteryTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- °C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- Statistics -->
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:id="@+id/statisticsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/bg_temperature_card"
+        app:layout_constraintTop_toBottomOf="@id/temperatureContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/txtStatsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Statistics"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <TextView
+            android:id="@+id/txtStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+    </LinearLayout>
+
+
+    <!-- Bottom navigation divider -->
+
+    <View
+        android:id="@+id/navigationDivider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/light_border"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <!-- Bottom navigation -->
+
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="?android:attr/colorBackground"
-        android:elevation="8dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnMonitoring"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="MONITOR"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="@null"/>
 
         <Button
             android:id="@+id/btnRecording"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="●&#10;RECORD"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="42dp"
-            android:background="?android:attr/textColorSecondary"
-            android:alpha="0.25" />
+            android:text="RECORD"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="@null"/>
 
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="⚙&#10;SETTINGS"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:text="SETTINGS"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="@null"/>
 
     </LinearLayout>
 
-</LinearLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
