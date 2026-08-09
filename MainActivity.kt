@@ -49,12 +49,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtSensors: TableLayout
 
     private lateinit var spRefresh: Spinner
-    private lateinit var btnSettings: Button
-    private lateinit var btnRecording: Button
+
 
     private lateinit var handler: Handler
     private lateinit var updateRunnable: Runnable
-
+    private lateinit var btnRecording: Button
+    private lateinit var btnMenu: TextView
     private var refreshInterval = 1000L
     private var updating = false
 
@@ -168,11 +168,12 @@ class MainActivity : AppCompatActivity() {
         spRefresh =
             findViewById(R.id.spRefresh)
 
-        btnSettings =
-            findViewById(R.id.btnSettings)
 
         btnRecording =
             findViewById(R.id.btnRecording)
+
+        btnMenu =
+            findViewById(R.id.btnMenu)
 
         styleCards()
         styleRefreshSpinner()
@@ -188,6 +189,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun styleCards() {
+
         val cards = listOf(
             findViewById<View>(R.id.cardCPU),
             findViewById<View>(R.id.cardGPU),
@@ -204,14 +206,26 @@ class MainActivity : AppCompatActivity() {
                 }
             )
 
-        cards.forEach {
-            it.background =
-                roundedBorder(
-                    blue,
-                    backgroundColor,
-                    1.5f,
-                    6f
-                )
+        cards.forEach { card ->
+
+            val drawable = GradientDrawable()
+
+            drawable.shape =
+                GradientDrawable.RECTANGLE
+
+            drawable.setColor(
+                backgroundColor
+            )
+
+            drawable.cornerRadius =
+                12f *
+                        resources.displayMetrics.density
+
+            card.background = drawable
+
+            card.elevation =
+                3f *
+                        resources.displayMetrics.density
         }
     }
     private fun isDarkTheme(): Boolean {
@@ -267,24 +281,10 @@ class MainActivity : AppCompatActivity() {
             secondaryTextColor
         )
 
-        btnSettings.setTextColor(
-            secondaryTextColor
-        )
-
         btnRecording.gravity =
             Gravity.CENTER
 
-        btnSettings.gravity =
-            Gravity.CENTER
-
         btnRecording.setPadding(
-            0,
-            4,
-            0,
-            2
-        )
-
-        btnSettings.setPadding(
             0,
             4,
             0,
@@ -396,22 +396,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupButtons() {
 
-        btnSettings.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    SettingsActivity::class.java
-                )
-            )
-        }
-
         btnRecording.setOnClickListener {
 
             startActivity(
                 Intent(
                     this,
                     RecordingActivity::class.java
+                )
+            )
+        }
+
+        btnMenu.setOnClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
                 )
             )
         }
@@ -513,14 +513,20 @@ class MainActivity : AppCompatActivity() {
                 formatTemperature(it)
             } ?: "--"
 
+        val unit = " °C"
+
         val text =
-            "$temperature\n$name"
+            "$temperature$unit\n$name"
 
         val result =
             SpannableString(text)
 
         val numberEnd =
             temperature.length
+
+        val unitEnd =
+            numberEnd + unit.length
+
 
         result.setSpan(
             AbsoluteSizeSpan(
@@ -541,12 +547,34 @@ class MainActivity : AppCompatActivity() {
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
+
         result.setSpan(
             AbsoluteSizeSpan(
-                16,
+                13,
                 true
             ),
-            numberEnd + 1,
+            numberEnd,
+            unitEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+
+        result.setSpan(
+            ForegroundColorSpan(
+                textPrimary
+            ),
+            0,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+
+        result.setSpan(
+            AbsoluteSizeSpan(
+                15,
+                true
+            ),
+            unitEnd + 1,
             text.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -555,16 +583,7 @@ class MainActivity : AppCompatActivity() {
             StyleSpan(
                 Typeface.BOLD
             ),
-            numberEnd + 1,
-            text.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-
-        result.setSpan(
-            ForegroundColorSpan(
-                textPrimary
-            ),
-            0,
+            unitEnd + 1,
             text.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -734,13 +753,27 @@ class MainActivity : AppCompatActivity() {
                 }
             )
 
+        val background =
+            GradientDrawable()
+
+        background.shape =
+            GradientDrawable.RECTANGLE
+
+        background.setColor(
+            backgroundColor
+        )
+
+        background.cornerRadius =
+            10f *
+                    resources.displayMetrics.density
+
         row.background =
-            roundedBorder(
-                blue,
-                backgroundColor,
-                1.5f,
-                6f
-            )
+            background
+
+        row.elevation =
+            2.5f *
+                    resources.displayMetrics.density
+
 
         val nameView =
             TextView(this)
@@ -748,7 +781,9 @@ class MainActivity : AppCompatActivity() {
         nameView.text =
             sensorName
 
-        nameView.setTextColor(blue)
+        nameView.setTextColor(
+            textPrimary
+        )
 
         nameView.textSize =
             14f
@@ -768,16 +803,20 @@ class MainActivity : AppCompatActivity() {
             8
         )
 
+
         val valueView =
             TextView(this)
 
         valueView.text =
-            if (temperature == "--")
+            if (temperature == "--") {
                 temperature
-            else
+            } else {
                 "$temperature °C"
+            }
 
-        valueView.setTextColor(blue)
+        valueView.setTextColor(
+            blue
+        )
 
         valueView.textSize =
             14f
@@ -797,6 +836,7 @@ class MainActivity : AppCompatActivity() {
             12,
             8
         )
+
 
         nameView.layoutParams =
             TableRow.LayoutParams(
