@@ -71,14 +71,24 @@ class MainActivity : AppCompatActivity() {
         )
 
     private val textPrimary: Int
-        get() = ContextCompat.getColor(
-            this,
-            if (isDarkTheme()) {
-                R.color.dark_primary_text
+        get() {
+            val typedValue = android.util.TypedValue()
+
+            theme.resolveAttribute(
+                android.R.attr.textColorPrimary,
+                typedValue,
+                true
+            )
+
+            return if (typedValue.resourceId != 0) {
+                ContextCompat.getColorStateList(
+                    this,
+                    typedValue.resourceId
+                )?.defaultColor ?: typedValue.data
             } else {
-                R.color.light_primary_text
+                typedValue.data
             }
-        )
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
