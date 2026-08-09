@@ -70,18 +70,15 @@ class MainActivity : AppCompatActivity() {
             R.color.temperature_max
         )
 
-    private val black: Int
-        get() {
-            val typedValue = android.util.TypedValue()
-
-            theme.resolveAttribute(
-                android.R.attr.textColorPrimary,
-                typedValue,
-                true
-            )
-
-            return typedValue.data
-        }
+    private val textPrimary: Int
+        get() = ContextCompat.getColor(
+            this,
+            if (isDarkTheme()) {
+                R.color.dark_primary_text
+            } else {
+                R.color.light_primary_text
+            }
+        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -555,7 +552,7 @@ class MainActivity : AppCompatActivity() {
 
         result.setSpan(
             ForegroundColorSpan(
-                black
+                textPrimary
             ),
             0,
             text.length,
@@ -607,7 +604,7 @@ class MainActivity : AppCompatActivity() {
             result,
             "AVG",
             avgValue,
-            black
+            textPrimary
         )
 
         return result
