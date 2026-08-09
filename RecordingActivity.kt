@@ -116,6 +116,11 @@ class RecordingActivity : AppCompatActivity() {
 
         btnSettings =
             findViewById(R.id.btnSettings)
+        btnStop.isEnabled = false
+        btnStart.isEnabled = true
+
+        btnStop.alpha = 0.45f
+        btnStart.alpha = 1f
         setupRefreshRate()
         setupButtons()
         clearRecordingDisplay()
@@ -204,12 +209,6 @@ class RecordingActivity : AppCompatActivity() {
             exportCsv()
         }
         btnMonitoring.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    MainActivity::class.java
-                )
-            )
             finish()
         }
 
@@ -242,6 +241,12 @@ class RecordingActivity : AppCompatActivity() {
 
         txtStatus.text = "Recording..."
 
+        btnStart.isEnabled = false
+        btnStop.isEnabled = true
+
+        btnStart.alpha = 0.45f
+        btnStop.alpha = 1f
+
         updateRecordingDisplay()
 
         restartUiUpdater()
@@ -260,6 +265,12 @@ class RecordingActivity : AppCompatActivity() {
         )
 
         txtStatus.text = "Stopped"
+
+        btnStart.isEnabled = true
+        btnStop.isEnabled = false
+
+        btnStart.alpha = 1f
+        btnStop.alpha = 0.45f
 
         clearRecordingDisplay()
     }
@@ -281,7 +292,14 @@ class RecordingActivity : AppCompatActivity() {
         recordingStartCount = 0
 
         txtStatus.text = "Stopped"
+
         logTable.removeAllViews()
+
+        btnStart.isEnabled = true
+        btnStop.isEnabled = false
+
+        btnStart.alpha = 1f
+        btnStop.alpha = 0.45f
 
         clearRecordingDisplay()
     }
