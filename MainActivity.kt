@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,9 +41,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
 
-    private lateinit var txtCPUStats: TextView
-    private lateinit var txtGPUStats: TextView
-    private lateinit var txtBatteryStats: TextView
+    private lateinit var txtCPUStats: LinearLayout
+    private lateinit var txtGPUStats: LinearLayout
+    private lateinit var txtBatteryStats: LinearLayout
 
     private lateinit var txtSensors: TableLayout
 
@@ -55,6 +56,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnMenu: TextView
     private var refreshInterval = 1000L
     private var updating = false
+    private lateinit var txtCPUMax: TextView
+    private lateinit var txtCPUMin: TextView
+    private lateinit var txtCPUAvg: TextView
+
+    private lateinit var txtGPUMax: TextView
+    private lateinit var txtGPUMin: TextView
+    private lateinit var txtGPUAvg: TextView
+
+    private lateinit var txtBatteryMax: TextView
+    private lateinit var txtBatteryMin: TextView
+    private lateinit var txtBatteryAvg: TextView
 
     private val blue: Int
         get() = ContextCompat.getColor(
@@ -148,6 +160,17 @@ class MainActivity : AppCompatActivity() {
 
         txtBattery =
             findViewById(R.id.txtBattery)
+        txtCPUMax = findViewById(R.id.txtCPUMax)
+        txtCPUMin = findViewById(R.id.txtCPUMin)
+        txtCPUAvg = findViewById(R.id.txtCPUAvg)
+
+        txtGPUMax = findViewById(R.id.txtGPUMax)
+        txtGPUMin = findViewById(R.id.txtGPUMin)
+        txtGPUAvg = findViewById(R.id.txtGPUAvg)
+
+        txtBatteryMax = findViewById(R.id.txtBatteryMax)
+        txtBatteryMin = findViewById(R.id.txtBatteryMin)
+        txtBatteryAvg = findViewById(R.id.txtBatteryAvg)
 
         txtCPUStats =
             findViewById(R.id.txtCPUStats)
@@ -422,32 +445,38 @@ class MainActivity : AppCompatActivity() {
 
             setTemperatureCard(
                 txtCPU,
-                txtCPUStats,
                 "CPU",
                 sample.cpu,
                 statistics.cpuMin,
                 statistics.cpuMax,
-                statistics.cpuAverage
+                statistics.cpuAverage,
+                txtCPUMax,
+                txtCPUMin,
+                txtCPUAvg
             )
 
             setTemperatureCard(
                 txtGPU,
-                txtGPUStats,
                 "GPU",
                 sample.gpu,
                 statistics.gpuMin,
                 statistics.gpuMax,
-                statistics.gpuAverage
+                statistics.gpuAverage,
+                txtGPUMax,
+                txtGPUMin,
+                txtGPUAvg
             )
 
             setTemperatureCard(
                 txtBattery,
-                txtBatteryStats,
                 "Battery",
                 sample.battery,
                 statistics.batteryMin,
                 statistics.batteryMax,
-                statistics.batteryAverage
+                statistics.batteryAverage,
+                txtBatteryMax,
+                txtBatteryMin,
+                txtBatteryAvg
             )
 
             val enabled =
@@ -475,26 +504,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTemperatureCard(
         valueView: TextView,
-        statsView: TextView,
         name: String,
         current: Float?,
         min: Float?,
         max: Float?,
-        average: Float?
+        average: Float?,
+        maxView: TextView,
+        minView: TextView,
+        avgView: TextView
     ) {
-
         valueView.text =
             buildCurrentText(
                 name,
                 current
             )
 
-        statsView.text =
-            buildStatsText(
-                min,
-                max,
-                average
-            )
+        maxView.text =
+            "${max?.let { formatTemperature(it) } ?: "--"} °C"
+
+        minView.text =
+            "${min?.let { formatTemperature(it) } ?: "--"} °C"
+
+        avgView.text =
+            "${average?.let { formatTemperature(it) } ?: "--"} °C"
     }
 
     private fun buildCurrentText(
