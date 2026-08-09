@@ -32,6 +32,7 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var statistics: Statistics
     private lateinit var sensorPreferences: SensorPreferences
     private lateinit var btnMenu: TextView
+    private lateinit var logContainer: HorizontalScrollView
 
     private lateinit var spRefresh: Spinner
     private lateinit var txtStatus: TextView
@@ -134,6 +135,7 @@ class RecordingActivity : AppCompatActivity() {
 
         logTable =
             findViewById(R.id.logTable)
+        logContainer = findViewById(R.id.logContainer)
 
         btnStart = findViewById(R.id.btnStart)
         btnStop = findViewById(R.id.btnStop)
@@ -671,6 +673,7 @@ class RecordingActivity : AppCompatActivity() {
     }
 
     private fun showLog() {
+        logContainer.visibility = View.VISIBLE
         logTable.removeAllViews()
 
         val logs =

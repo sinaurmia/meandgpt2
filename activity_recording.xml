@@ -100,14 +100,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="68dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
-                android:paddingStart="18dp"
-                android:layout_marginBottom="6dp"
-                android:paddingEnd="18dp">
+                android:paddingStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:paddingEnd="20dp">
 
                 <TextView
                     android:id="@+id/txtCPU"
@@ -227,14 +227,14 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="68dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
-                android:paddingStart="18dp"
-                android:layout_marginBottom="6dp"
-                android:paddingEnd="18dp">
+                android:paddingStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:paddingEnd="20dp">
 
                 <TextView
                     android:id="@+id/txtGPU"
@@ -354,14 +354,14 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="68dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
-                android:paddingStart="18dp"
-                android:layout_marginBottom="6dp"
-                android:paddingEnd="18dp">
+                android:paddingStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:paddingEnd="20dp">
 
                 <TextView
                     android:id="@+id/txtBattery"
@@ -633,15 +633,15 @@
             <!-- Log -->
 
             <HorizontalScrollView
+                android:id="@+id/logContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="18dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="3dp"
                 android:padding="1dp"
-                android:fillViewport="false">
+                android:fillViewport="false"
+                android:visibility="gone">
 
                 <TableLayout
                     android:id="@+id/logTable"
