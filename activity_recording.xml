@@ -97,15 +97,13 @@
             android:paddingBottom="12dp">
 
 
-            <!-- CPU -->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp">
 
@@ -115,39 +113,123 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--&#10;CPU"
+                    android:text="-- °C&#10;CPU"
                     android:textColor="?android:attr/textColorPrimary"/>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="12dp"
                     android:background="@color/light_border"
-                    android:alpha="0.6"/>
+                    android:alpha="0.55"/>
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/txtCPUStats"
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:gravity="center_vertical"
-                    android:text="MAX   --&#10;MIN   --&#10;AVG   --"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MAX"
+                            android:textColor="@color/temperature_max"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtCPUMax"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MIN"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtCPUMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="AVG"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtCPUAvg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
-
-
-            <!-- GPU -->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_marginTop="6dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp">
 
@@ -157,39 +239,123 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--&#10;GPU"
+                    android:text="-- °C&#10;GPU"
                     android:textColor="?android:attr/textColorPrimary"/>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="12dp"
                     android:background="@color/light_border"
-                    android:alpha="0.6"/>
+                    android:alpha="0.55"/>
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/txtGPUStats"
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:gravity="center_vertical"
-                    android:text="MAX   --&#10;MIN   --&#10;AVG   --"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MAX"
+                            android:textColor="@color/temperature_max"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtGPUMax"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MIN"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtGPUMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="AVG"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtGPUAvg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
-
-
-            <!-- Battery -->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_marginTop="6dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp">
 
@@ -199,28 +365,116 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--&#10;Battery"
+                    android:text="-- °C&#10;Battery"
                     android:textColor="?android:attr/textColorPrimary"/>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="12dp"
                     android:background="@color/light_border"
-                    android:alpha="0.6"/>
+                    android:alpha="0.55"/>
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/txtBatteryStats"
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:gravity="center_vertical"
-                    android:text="MAX   --&#10;MIN   --&#10;AVG   --"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MAX"
+                            android:textColor="@color/temperature_max"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtBatteryMax"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="MIN"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtBatteryMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/light_border"
+                        android:alpha="0.30"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="AVG"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtBatteryAvg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-- °C"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
-
 
             <!-- Information -->
 
@@ -293,6 +547,7 @@
                     android:text="▶  START"
                     android:textColor="@color/primary_blue"
                     android:textSize="12sp"
+                    android:elevation="2dp"
                     android:textStyle="bold"/>
 
                 <Button
@@ -307,6 +562,7 @@
                     android:text="■  STOP"
                     android:textColor="@color/temperature_max"
                     android:textSize="12sp"
+                    android:elevation="2dp"
                     android:textStyle="bold"/>
 
                 <Button
@@ -320,6 +576,7 @@
                     android:text="↻  RESET"
                     android:textColor="#FF8A00"
                     android:textSize="12sp"
+                    android:elevation="2dp"
                     android:textStyle="bold"/>
 
             </LinearLayout>
@@ -344,6 +601,7 @@
                     android:text="☷  SHOW LOG"
                     android:textColor="@color/primary_blue"
                     android:textSize="12sp"
+                    android:elevation="2dp"
                     android:textStyle="bold"/>
 
                 <Button
@@ -357,6 +615,7 @@
                     android:text="⇧  EXPORT CSV"
                     android:textColor="@color/primary_blue"
                     android:textSize="12sp"
+                    android:elevation="2dp"
                     android:textStyle="bold"/>
 
             </LinearLayout>

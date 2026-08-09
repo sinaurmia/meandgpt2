@@ -20,9 +20,12 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
 
 class RecordingActivity : AppCompatActivity() {
 
+    private var recordingStartTime = 0L
+    private var recordingElapsedTime = 0L
     private lateinit var thermalReader: ThermalReader
     private lateinit var storage: Storage
     private lateinit var recorder: Recorder
@@ -35,9 +38,21 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var txtCPU: TextView
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
-    private lateinit var txtCPUStats: TextView
-    private lateinit var txtGPUStats: TextView
-    private lateinit var txtBatteryStats: TextView
+    private lateinit var txtCPUStats: LinearLayout
+    private lateinit var txtGPUStats: LinearLayout
+    private lateinit var txtBatteryStats: LinearLayout
+
+    private lateinit var txtCPUMax: TextView
+    private lateinit var txtCPUMin: TextView
+    private lateinit var txtCPUAvg: TextView
+
+    private lateinit var txtGPUMax: TextView
+    private lateinit var txtGPUMin: TextView
+    private lateinit var txtGPUAvg: TextView
+
+    private lateinit var txtBatteryMax: TextView
+    private lateinit var txtBatteryMin: TextView
+    private lateinit var txtBatteryAvg: TextView
     private lateinit var txtCount: TextView
     private lateinit var logTable: TableLayout
     private lateinit var txtTotalRows: TextView
@@ -97,6 +112,19 @@ class RecordingActivity : AppCompatActivity() {
         txtCPUStats = findViewById(R.id.txtCPUStats)
         txtGPUStats = findViewById(R.id.txtGPUStats)
         txtBatteryStats = findViewById(R.id.txtBatteryStats)
+
+        txtCPUMax = findViewById(R.id.txtCPUMax)
+        txtCPUMin = findViewById(R.id.txtCPUMin)
+        txtCPUAvg = findViewById(R.id.txtCPUAvg)
+
+        txtGPUMax = findViewById(R.id.txtGPUMax)
+        txtGPUMin = findViewById(R.id.txtGPUMin)
+        txtGPUAvg = findViewById(R.id.txtGPUAvg)
+
+        txtBatteryMax = findViewById(R.id.txtBatteryMax)
+        txtBatteryMin = findViewById(R.id.txtBatteryMin)
+        txtBatteryAvg = findViewById(R.id.txtBatteryAvg)
+
         btnMenu = findViewById(R.id.btnMenu)
         txtCount =
             findViewById(R.id.txtCount)
@@ -127,6 +155,26 @@ class RecordingActivity : AppCompatActivity() {
         setupButtons()
         clearRecordingDisplay()
     }
+    private val recordingTimerRunnable =
+        object : Runnable {
+
+            override fun run() {
+
+                if (!recordingUiActive)
+                    return
+
+                recordingElapsedTime =
+                    android.os.SystemClock.elapsedRealtime() -
+                            recordingStartTime
+
+                updateRecordingTime()
+
+                handler.postDelayed(
+                    this,
+                    1000L
+                )
+            }
+        }
 
     private fun setupRefreshRate() {
         val options = listOf(
@@ -238,6 +286,16 @@ class RecordingActivity : AppCompatActivity() {
         clearRecordingDisplay()
 
         recorder.start()
+        recordingStartTime =
+            android.os.SystemClock.elapsedRealtime()
+
+        recordingElapsedTime = 0L
+
+        updateRecordingTime()
+
+        handler.post(
+            recordingTimerRunnable
+        )
 
         recordingUiActive = true
 
@@ -259,7 +317,15 @@ class RecordingActivity : AppCompatActivity() {
             return
 
         recorder.stop()
+        recordingElapsedTime =
+            android.os.SystemClock.elapsedRealtime() -
+                    recordingStartTime
 
+        handler.removeCallbacks(
+            recordingTimerRunnable
+        )
+
+        updateRecordingTime()
         recordingUiActive = false
 
         handler.removeCallbacks(
@@ -302,10 +368,67 @@ class RecordingActivity : AppCompatActivity() {
 
         btnStart.alpha = 1f
         btnStop.alpha = 0.45f
+        recordingElapsedTime = 0L
 
+        handler.removeCallbacks(
+            recordingTimerRunnable
+        )
+
+        updateRecordingTime()
         clearRecordingDisplay()
     }
+    private fun updateRecordingTime() {
 
+        val totalSeconds =
+            recordingElapsedTime / 1000L
+
+        val hours =
+            totalSeconds / 3600L
+
+        val minutes =
+            (totalSeconds % 3600L) / 60L
+
+        val seconds =
+            totalSeconds % 60L
+
+        val time =
+            String.format(
+                "%02d:%02d:%02d",
+                hours,
+                minutes,
+                seconds
+            )
+
+        val text =
+            "Recording\n$time"
+
+        val result =
+            SpannableString(text)
+
+        val blue =
+            ContextCompat.getColor(
+                this,
+                R.color.primary_blue
+            )
+
+        result.setSpan(
+            ForegroundColorSpan(blue),
+            0,
+            "Recording".length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            android.text.style.StyleSpan(
+                android.graphics.Typeface.BOLD
+            ),
+            0,
+            "Recording".length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        txtStatus.text = result
+    }
     private fun updateRecordingDisplay() {
         if (!recordingUiActive)
             return
@@ -331,14 +454,49 @@ class RecordingActivity : AppCompatActivity() {
         }
 
         txtCPU.text =
-            sample.cpu?.let {
-                "${formatTemperature(it)} °C\nCPU"
-            } ?: "--\nCPU"
+            buildCurrentText(
+                "CPU",
+                sample.cpu
+            )
 
         txtGPU.text =
-            sample.gpu?.let {
-                "${formatTemperature(it)} °C\nGPU"
-            } ?: "--\nGPU"
+            buildCurrentText(
+                "GPU",
+                sample.gpu
+            )
+
+        txtBattery.text =
+            buildCurrentText(
+                "Battery",
+                sample.battery
+            )
+
+        txtCPUMax.text =
+            "${statistics.cpuMax?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtCPUMin.text =
+            "${statistics.cpuMin?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtCPUAvg.text =
+            "${statistics.cpuAverage?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtGPUMax.text =
+            "${statistics.gpuMax?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtGPUMin.text =
+            "${statistics.gpuMin?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtGPUAvg.text =
+            "${statistics.gpuAverage?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtBatteryMax.text =
+            "${statistics.batteryMax?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtBatteryMin.text =
+            "${statistics.batteryMin?.let { formatTemperature(it) } ?: "--"} °C"
+
+        txtBatteryAvg.text =
+            "${statistics.batteryAverage?.let { formatTemperature(it) } ?: "--"} °C"
 
         txtCPUStats.text =
             buildStatsText(
@@ -367,7 +525,79 @@ class RecordingActivity : AppCompatActivity() {
             } ?: "--\nBattery"
 
     }
+    private fun buildCurrentText(
+        name: String,
+        current: Float?
+    ): SpannableString {
+        val temperature =
+            current?.let {
+                formatTemperature(it)
+            } ?: "--"
 
+        val unit = " °C"
+
+        val text =
+            "$temperature$unit\n$name"
+
+        val result =
+            SpannableString(text)
+
+        val numberEnd =
+            temperature.length
+
+        val unitEnd =
+            numberEnd + unit.length
+
+        result.setSpan(
+            android.text.style.AbsoluteSizeSpan(
+                28,
+                true
+            ),
+            0,
+            numberEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            android.text.style.StyleSpan(
+                android.graphics.Typeface.BOLD
+            ),
+            0,
+            numberEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            android.text.style.AbsoluteSizeSpan(
+                11,
+                true
+            ),
+            numberEnd,
+            unitEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            android.text.style.AbsoluteSizeSpan(
+                12,
+                true
+            ),
+            unitEnd + 1,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            android.text.style.StyleSpan(
+                android.graphics.Typeface.BOLD
+            ),
+            unitEnd + 1,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return result
+    }
     private fun buildTemperatureText(
         name: String,
         current: Float?,
@@ -421,9 +651,33 @@ class RecordingActivity : AppCompatActivity() {
     }
 
     private fun clearTemperatureDisplays() {
-        txtCPUStats.text = "MAX --\nMIN --\nAVG --"
-        txtGPUStats.text = "MAX --\nMIN --\nAVG --"
-        txtBatteryStats.text = "MAX --\nMIN --\nAVG --"
+
+        txtCPU.text = buildCurrentText(
+            "CPU",
+            null
+        )
+
+        txtGPU.text = buildCurrentText(
+            "GPU",
+            null
+        )
+
+        txtBattery.text = buildCurrentText(
+            "Battery",
+            null
+        )
+
+        txtCPUMax.text = "-- °C"
+        txtCPUMin.text = "-- °C"
+        txtCPUAvg.text = "-- °C"
+
+        txtGPUMax.text = "-- °C"
+        txtGPUMin.text = "-- °C"
+        txtGPUAvg.text = "-- °C"
+
+        txtBatteryMax.text = "-- °C"
+        txtBatteryMin.text = "-- °C"
+        txtBatteryAvg.text = "-- °C"
     }
 
     private fun restartUiUpdater() {
@@ -673,6 +927,9 @@ class RecordingActivity : AppCompatActivity() {
         if (recorder.isRunning()) {
             recordingUiActive = true
             restartUiUpdater()
+            handler.post(
+                recordingTimerRunnable
+            )
         } else {
             recordingUiActive = false
             clearRecordingDisplay()
@@ -682,6 +939,9 @@ class RecordingActivity : AppCompatActivity() {
     override fun onPause() {
         handler.removeCallbacks(
             uiRunnable
+        )
+        handler.removeCallbacks(
+            recordingTimerRunnable
         )
 
         super.onPause()
