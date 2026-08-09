@@ -16,7 +16,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
-
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import androidx.core.content.ContextCompat
 
 class RecordingActivity : AppCompatActivity() {
 
@@ -31,6 +34,9 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var txtCPU: TextView
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
+    private lateinit var txtCPUStats: TextView
+    private lateinit var txtGPUStats: TextView
+    private lateinit var txtBatteryStats: TextView
     private lateinit var txtCount: TextView
     private lateinit var logTable: TableLayout
     private lateinit var txtTotalRows: TextView
@@ -87,6 +93,9 @@ class RecordingActivity : AppCompatActivity() {
         txtCPU = findViewById(R.id.txtCPU)
         txtGPU = findViewById(R.id.txtGPU)
         txtBattery = findViewById(R.id.txtBattery)
+        txtCPUStats = findViewById(R.id.txtCPUStats)
+        txtGPUStats = findViewById(R.id.txtGPUStats)
+        txtBatteryStats = findViewById(R.id.txtBatteryStats)
         txtCount =
             findViewById(R.id.txtCount)
 
@@ -302,31 +311,41 @@ class RecordingActivity : AppCompatActivity() {
         }
 
         txtCPU.text =
-            buildTemperatureText(
-                "CPU",
-                sample.cpu,
-                statistics.cpuMin,
+            sample.cpu?.let {
+                "${formatTemperature(it)} °C\nCPU"
+            } ?: "--\nCPU"
+
+        txtGPU.text =
+            sample.gpu?.let {
+                "${formatTemperature(it)} °C\nGPU"
+            } ?: "--\nGPU"
+
+        txtCPUStats.text =
+            buildStatsText(
                 statistics.cpuMax,
+                statistics.cpuMin,
                 statistics.cpuAverage
             )
 
-        txtGPU.text =
-            buildTemperatureText(
-                "GPU",
-                sample.gpu,
-                statistics.gpuMin,
+        txtGPUStats.text =
+            buildStatsText(
                 statistics.gpuMax,
+                statistics.gpuMin,
                 statistics.gpuAverage
             )
 
-        txtBattery.text =
-            buildTemperatureText(
-                "Battery",
-                sample.battery,
-                statistics.batteryMin,
+        txtBatteryStats.text =
+            buildStatsText(
                 statistics.batteryMax,
+                statistics.batteryMin,
                 statistics.batteryAverage
             )
+
+        txtBattery.text =
+            sample.battery?.let {
+                "${formatTemperature(it)} °C\nBattery"
+            } ?: "--\nBattery"
+
     }
 
     private fun buildTemperatureText(
@@ -382,9 +401,9 @@ class RecordingActivity : AppCompatActivity() {
     }
 
     private fun clearTemperatureDisplays() {
-        txtCPU.text = "CPU: --"
-        txtGPU.text = "GPU: --"
-        txtBattery.text = "Battery: --"
+        txtCPUStats.text = "MAX --\nMIN --\nAVG --"
+        txtGPUStats.text = "MAX --\nMIN --\nAVG --"
+        txtBatteryStats.text = "MAX --\nMIN --\nAVG --"
     }
 
     private fun restartUiUpdater() {
@@ -664,5 +683,67 @@ class RecordingActivity : AppCompatActivity() {
         value: Float
     ): String {
         return "%.1f".format(value)
+    }
+    private fun buildStatsText(
+        max: Float?,
+        min: Float?,
+        average: Float?
+    ): SpannableString {
+
+        val maxText =
+            "MAX  ${max?.let { formatTemperature(it) } ?: "--"} °C"
+
+        val minText =
+            "MIN  ${min?.let { formatTemperature(it) } ?: "--"} °C"
+
+        val avgText =
+            "AVG  ${average?.let { formatTemperature(it) } ?: "--"} °C"
+
+        val text =
+            "$maxText\n$minText\n$avgText"
+
+        val result =
+            SpannableString(text)
+
+        val maxColor =
+            ContextCompat.getColor(
+                this,
+                R.color.temperature_max
+            )
+
+        val minColor =
+            ContextCompat.getColor(
+                this,
+                R.color.temperature_min
+            )
+
+        val avgColor =
+            ContextCompat.getColor(
+                this,
+                R.color.temperature_average
+            )
+
+        result.setSpan(
+            ForegroundColorSpan(maxColor),
+            0,
+            maxText.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            ForegroundColorSpan(minColor),
+            maxText.length + 1,
+            maxText.length + 1 + minText.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            ForegroundColorSpan(avgColor),
+            maxText.length + minText.length + 2,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return result
     }
 }

@@ -4,68 +4,109 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?android:attr/colorBackground">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Settings"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="42dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="⋮"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="28sp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/textColorSecondary"
+        android:alpha="0.25"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingBottom="20dp">
+            android:padding="12dp"
+            android:paddingBottom="24dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Main CPU Sensor"
-                android:textSize="18sp"
+                android:textColor="@color/primary_blue"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <Spinner
                 android:id="@+id/spCPU"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_marginTop="6dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="Main GPU Sensor"
-                android:textSize="18sp"
+                android:textColor="@color/primary_blue"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <Spinner
                 android:id="@+id/spGPU"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_marginTop="6dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Sensors to monitor"
-                android:textSize="18sp"
+                android:text="Sensors to Monitor"
+                android:textColor="@color/primary_blue"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Select only the sensors you need. Unselected sensors will not be processed or recorded."
-                android:textSize="14sp"/>
+                android:layout_marginTop="5dp"
+                android:text="Select the additional sensors you want to monitor and record."
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="13sp"/>
 
             <LinearLayout
                 android:id="@+id/sensorContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical"/>
 
             <TextView
@@ -73,14 +114,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Battery"
-                android:textSize="18sp"
+                android:textColor="@color/primary_blue"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <CheckBox
                 android:id="@+id/chkBatteryPercentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Battery percentage"/>
+                android:layout_marginTop="4dp"
+                android:text="Show battery percentage"
+                android:textColor="?android:attr/textColorPrimary"/>
 
         </LinearLayout>
 
@@ -89,24 +133,39 @@
     <!-- Fixed bottom buttons -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:background="#03A9F4"
-        android:padding="2dp"
-        android:orientation="horizontal">
+        android:layout_height="62dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="?android:attr/colorBackground"
+        android:elevation="8dp">
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="BACK"/>
+            android:background="@android:color/transparent"
+            android:text="←&#10;BACK"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="38dp"
+            android:background="?android:attr/textColorSecondary"
+            android:alpha="0.25"/>
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="SAVE"/>
+            android:background="@android:color/transparent"
+            android:text="✓&#10;SAVE"
+            android:textColor="@color/primary_blue"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
