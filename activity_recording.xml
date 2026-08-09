@@ -229,6 +229,7 @@
 
             </LinearLayout>
 
+
             <!-- Recording controls -->
 
             <LinearLayout
@@ -244,8 +245,9 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/bg_record_start"
+                    android:backgroundTint="@null"
                     android:text="START"
-                    android:textColor="@color/light_surface"
+                    android:textColor="#FFFFFF"
                     android:textSize="13sp"
                     android:textStyle="bold"/>
 
@@ -257,8 +259,9 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/bg_record_stop"
+                    android:backgroundTint="@null"
                     android:text="STOP"
-                    android:textColor="@color/light_surface"
+                    android:textColor="#FFFFFF"
                     android:textSize="13sp"
                     android:textStyle="bold"/>
 
@@ -269,6 +272,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bg_record_secondary"
+                    android:backgroundTint="@null"
                     android:text="RESET"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="13sp"
@@ -289,6 +293,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/bg_record_secondary"
+                    android:backgroundTint="@null"
                     android:text="SHOW LOG"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="13sp"
@@ -301,6 +306,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:background="@drawable/bg_record_secondary"
+                    android:backgroundTint="@null"
                     android:text="EXPORT CSV"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="13sp"
