@@ -1,14 +1,28 @@
 package com.example.meandgpt2
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +36,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statistics: Statistics
 
     private lateinit var txtStatus: TextView
+
     private lateinit var txtCPU: TextView
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
-    private lateinit var txtSensors: TextView
+
+    private lateinit var txtCPUStats: TextView
+    private lateinit var txtGPUStats: TextView
+    private lateinit var txtBatteryStats: TextView
+
+    private lateinit var txtSensors: TableLayout
+
     private lateinit var spRefresh: Spinner
     private lateinit var btnSettings: Button
     private lateinit var btnRecording: Button
@@ -35,6 +56,10 @@ class MainActivity : AppCompatActivity() {
 
     private var refreshInterval = 1000L
     private var updating = false
+
+    private val blue = Color.rgb(18, 103, 255)
+    private val red = Color.rgb(235, 45, 45)
+    private val black = Color.rgb(20, 20, 20)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +124,15 @@ class MainActivity : AppCompatActivity() {
         txtBattery =
             findViewById(R.id.txtBattery)
 
+        txtCPUStats =
+            findViewById(R.id.txtCPUStats)
+
+        txtGPUStats =
+            findViewById(R.id.txtGPUStats)
+
+        txtBatteryStats =
+            findViewById(R.id.txtBatteryStats)
+
         txtSensors =
             findViewById(R.id.txtSensors)
 
@@ -111,14 +145,111 @@ class MainActivity : AppCompatActivity() {
         btnRecording =
             findViewById(R.id.btnRecording)
 
+        styleCards()
+        styleRefreshSpinner()
+        styleBottomButtons()
+
         setupRefreshRate()
         setupButtons()
 
         txtStatus.text =
             "Monitoring stopped"
+
+        clearSensorTable()
+    }
+
+    private fun styleCards() {
+
+        val cards = listOf(
+            findViewById<View>(R.id.cardCPU),
+            findViewById<View>(R.id.cardGPU),
+            findViewById<View>(R.id.cardBattery)
+        )
+
+        cards.forEach {
+            it.background =
+                roundedBorder(
+                    blue,
+                    Color.WHITE,
+                    1.5f,
+                    6f
+                )
+        }
+    }
+
+    private fun styleRefreshSpinner() {
+
+        spRefresh.background =
+            roundedBorder(
+                Color.rgb(215, 220, 228),
+                Color.WHITE,
+                1f,
+                6f
+            )
+    }
+
+    private fun styleBottomButtons() {
+
+        btnRecording.setTextColor(
+            Color.rgb(105, 105, 105)
+        )
+
+        btnSettings.setTextColor(
+            Color.rgb(105, 105, 105)
+        )
+
+        btnRecording.gravity =
+            Gravity.CENTER
+
+        btnSettings.gravity =
+            Gravity.CENTER
+
+        btnRecording.setPadding(
+            0,
+            4,
+            0,
+            2
+        )
+
+        btnSettings.setPadding(
+            0,
+            4,
+            0,
+            2
+        )
+    }
+
+    private fun roundedBorder(
+        strokeColor: Int,
+        fillColor: Int,
+        strokeWidthDp: Float,
+        radiusDp: Float
+    ): GradientDrawable {
+
+        val drawable =
+            GradientDrawable()
+
+        drawable.shape =
+            GradientDrawable.RECTANGLE
+
+        drawable.setColor(fillColor)
+
+        drawable.cornerRadius =
+            radiusDp * resources.displayMetrics.density
+
+        drawable.setStroke(
+            (strokeWidthDp *
+                    resources.displayMetrics.density)
+                .toInt()
+                .coerceAtLeast(1),
+            strokeColor
+        )
+
+        return drawable
     }
 
     private fun setupRefreshRate() {
+
         val options =
             listOf(
                 "1 Second",
@@ -157,14 +288,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         spRefresh.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
+            object :
+                AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: android.view.View?,
+                    view: View?,
                     position: Int,
                     id: Long
                 ) {
+
                     refreshInterval =
                         values[position]
 
@@ -189,7 +322,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
+
         btnSettings.setOnClickListener {
+
             startActivity(
                 Intent(
                     this,
@@ -199,6 +334,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRecording.setOnClickListener {
+
             startActivity(
                 Intent(
                     this,
@@ -209,39 +345,43 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun readTemperatures() {
+
         try {
+
             val sample =
                 thermalReader.readAll()
 
-            // فقط سه سنسور اصلی وارد Statistics می‌شوند.
             statistics.update(sample)
 
-            txtCPU.text =
-                buildMainTemperatureText(
-                    "CPU",
-                    sample.cpu,
-                    statistics.cpuMin,
-                    statistics.cpuMax,
-                    statistics.cpuAverage
-                )
+            setTemperatureCard(
+                txtCPU,
+                txtCPUStats,
+                "CPU",
+                sample.cpu,
+                statistics.cpuMin,
+                statistics.cpuMax,
+                statistics.cpuAverage
+            )
 
-            txtGPU.text =
-                buildMainTemperatureText(
-                    "GPU",
-                    sample.gpu,
-                    statistics.gpuMin,
-                    statistics.gpuMax,
-                    statistics.gpuAverage
-                )
+            setTemperatureCard(
+                txtGPU,
+                txtGPUStats,
+                "GPU",
+                sample.gpu,
+                statistics.gpuMin,
+                statistics.gpuMax,
+                statistics.gpuAverage
+            )
 
-            txtBattery.text =
-                buildMainTemperatureText(
-                    "Battery",
-                    sample.battery,
-                    statistics.batteryMin,
-                    statistics.batteryMax,
-                    statistics.batteryAverage
-                )
+            setTemperatureCard(
+                txtBattery,
+                txtBatteryStats,
+                "Battery",
+                sample.battery,
+                statistics.batteryMin,
+                statistics.batteryMax,
+                statistics.batteryAverage
+            )
 
             val enabled =
                 sensorPreferences
@@ -252,17 +392,12 @@ class MainActivity : AppCompatActivity() {
                     enabled.contains(it)
                 }
 
-            txtSensors.text =
-                if (extraSensors.isEmpty()) {
-                    "No additional sensors selected"
-                } else {
-                    extraSensors.entries
-                        .joinToString("\n") {
-                            "${it.key}: ${formatTemperature(it.value)} °C"
-                        }
-                }
+            updateSensorTable(
+                extraSensors
+            )
 
         } catch (e: Exception) {
+
             Log.e(
                 "MONITOR",
                 "Read failed",
@@ -271,58 +406,350 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun buildMainTemperatureText(
+    private fun setTemperatureCard(
+        valueView: TextView,
+        statsView: TextView,
         name: String,
         current: Float?,
         min: Float?,
         max: Float?,
         average: Float?
-    ): String {
-        return buildString {
-            append(name)
-            append(": ")
+    ) {
 
-            append(
-                current?.let {
-                    formatTemperature(it)
-                } ?: "--"
+        valueView.text =
+            buildCurrentText(
+                name,
+                current
             )
 
-            append(" °C\n")
-
-            append("Min: ")
-            append(
-                min?.let {
-                    formatTemperature(it)
-                } ?: "--"
+        statsView.text =
+            buildStatsText(
+                min,
+                max,
+                average
             )
-            append(" °C\n")
-
-            append("Max: ")
-            append(
-                max?.let {
-                    formatTemperature(it)
-                } ?: "--"
-            )
-            append(" °C\n")
-
-            append("Average: ")
-            append(
-                average?.let {
-                    formatTemperature(it)
-                } ?: "--"
-            )
-            append(" °C")
-        }
     }
 
-    private fun formatTemperature(
-        value: Float
-    ): String {
-        return "%.1f".format(value)
+    private fun buildCurrentText(
+        name: String,
+        current: Float?
+    ): SpannableString {
+
+        val temperature =
+            current?.let {
+                formatTemperature(it)
+            } ?: "--"
+
+        val text =
+            "$temperature\n$name"
+
+        val result =
+            SpannableString(text)
+
+        val numberEnd =
+            temperature.length
+
+        result.setSpan(
+            AbsoluteSizeSpan(
+                34,
+                true
+            ),
+            0,
+            numberEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            StyleSpan(
+                Typeface.BOLD
+            ),
+            0,
+            numberEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            AbsoluteSizeSpan(
+                16,
+                true
+            ),
+            numberEnd + 1,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            StyleSpan(
+                Typeface.BOLD
+            ),
+            numberEnd + 1,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        result.setSpan(
+            ForegroundColorSpan(
+                black
+            ),
+            0,
+            text.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return result
+    }
+
+    private fun buildStatsText(
+        min: Float?,
+        max: Float?,
+        average: Float?
+    ): SpannableStringBuilder {
+
+        val maxValue =
+            max?.let {
+                formatTemperature(it)
+            } ?: "--"
+
+        val minValue =
+            min?.let {
+                formatTemperature(it)
+            } ?: "--"
+
+        val avgValue =
+            average?.let {
+                formatTemperature(it)
+            } ?: "--"
+
+        val result =
+            SpannableStringBuilder()
+
+        appendStatLine(
+            result,
+            "MAX",
+            maxValue,
+            red
+        )
+
+        appendStatLine(
+            result,
+            "MIN",
+            minValue,
+            blue
+        )
+
+        appendStatLine(
+            result,
+            "AVG",
+            avgValue,
+            black
+        )
+
+        return result
+    }
+
+    private fun appendStatLine(
+        builder: SpannableStringBuilder,
+        label: String,
+        value: String,
+        labelColor: Int
+    ) {
+
+        val start =
+            builder.length
+
+        builder.append(
+            "$label   $value"
+        )
+
+        val labelEnd =
+            start + label.length
+
+        builder.setSpan(
+            ForegroundColorSpan(
+                labelColor
+            ),
+            start,
+            labelEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        builder.setSpan(
+            StyleSpan(
+                Typeface.BOLD
+            ),
+            start,
+            labelEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        builder.setSpan(
+            StyleSpan(
+                Typeface.BOLD
+            ),
+            labelEnd + 3,
+            builder.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        builder.append("\n")
+    }
+
+    private fun updateSensorTable(
+        sensors: Map<String, Float>
+    ) {
+
+        txtSensors.removeAllViews()
+
+        if (sensors.isEmpty()) {
+
+            val row =
+                createSensorRow(
+                    "No additional sensors",
+                    "--"
+                )
+
+            txtSensors.addView(row)
+
+            return
+        }
+
+        sensors.entries
+            .sortedBy {
+                it.key
+            }
+            .forEach { entry ->
+
+                val row =
+                    createSensorRow(
+                        entry.key,
+                        formatTemperature(
+                            entry.value
+                        )
+                    )
+
+                txtSensors.addView(row)
+            }
+    }
+
+    private fun createSensorRow(
+        sensorName: String,
+        temperature: String
+    ): TableRow {
+
+        val row =
+            TableRow(this)
+
+        row.layoutParams =
+            TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+
+                topMargin =
+                    (6 *
+                            resources.displayMetrics.density)
+                        .toInt()
+            }
+
+        row.background =
+            roundedBorder(
+                blue,
+                Color.WHITE,
+                1.5f,
+                6f
+            )
+
+        val nameView =
+            TextView(this)
+
+        nameView.text =
+            sensorName
+
+        nameView.textColor =
+            blue
+
+        nameView.textSize =
+            14f
+
+        nameView.setTypeface(
+            null,
+            Typeface.BOLD
+        )
+
+        nameView.gravity =
+            Gravity.CENTER_VERTICAL
+
+        nameView.setPadding(
+            12,
+            8,
+            8,
+            8
+        )
+
+        val valueView =
+            TextView(this)
+
+        valueView.text =
+            if (temperature == "--")
+                temperature
+            else
+                "$temperature °C"
+
+        valueView.textColor =
+            blue
+
+        valueView.textSize =
+            14f
+
+        valueView.setTypeface(
+            null,
+            Typeface.BOLD
+        )
+
+        valueView.gravity =
+            Gravity.CENTER_VERTICAL or
+                    Gravity.END
+
+        valueView.setPadding(
+            8,
+            8,
+            12,
+            8
+        )
+
+        nameView.layoutParams =
+            TableRow.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1f
+            )
+
+        valueView.layoutParams =
+            TableRow.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+        row.addView(nameView)
+        row.addView(valueView)
+
+        return row
+    }
+
+    private fun clearSensorTable() {
+
+        txtSensors.removeAllViews()
+
+        txtSensors.addView(
+            createSensorRow(
+                "No additional sensors",
+                "--"
+            )
+        )
     }
 
     private fun startUpdater() {
+
         if (updating)
             return
 
@@ -344,6 +771,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopUpdater() {
+
         updating = false
 
         handler.removeCallbacks(
@@ -355,6 +783,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restartUpdater() {
+
         handler.removeCallbacks(
             updateRunnable
         )
@@ -371,6 +800,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+
         super.onResume()
 
         thermalReader.refreshSensorCache()
@@ -383,15 +813,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+
         stopUpdater()
 
         super.onPause()
     }
 
     override fun onDestroy() {
+
         stopUpdater()
 
         super.onDestroy()
     }
-}
 
+    private fun formatTemperature(
+        value: Float
+    ): String {
+
+        return "%.1f".format(value)
+    }
+}

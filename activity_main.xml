@@ -6,131 +6,212 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:background="#FFFFFF">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center"
-        android:text="Temperature Monitor"
-        android:textSize="22sp"
-        android:textStyle="bold"/>
-
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="58dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="#FFFFFF">
+
+        <Space
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Monitor"
+            android:textColor="#111111"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtMenu"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="⋮"
+            android:textColor="#111111"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD" />
+
+    <!-- Refresh rate -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Refresh Rate"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textColor="#1267FF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/spRefresh"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"/>
+            android:layout_width="210dp"
+            android:layout_height="42dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
 
     </LinearLayout>
 
+    <!-- Status kept for existing logic -->
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:gravity="center_vertical"
-        android:text="Monitoring stopped"
-        android:textSize="14sp"
-        android:textStyle="bold"/>
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:text="Monitoring stopped" />
 
+    <!-- Scrollable content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="20dp">
 
+            <!-- CPU -->
             <LinearLayout
+                android:id="@+id/cardCPU"
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
-                android:layout_marginTop="6dp"
-                android:background="#03A9F4"
-                android:padding="2dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txtCPU"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="CPU: --"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:text="--\nCPU"
+                    android:textColor="#111111"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#1677FF" />
+
+                <TextView
+                    android:id="@+id/txtCPUStats"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingStart="18dp"
+                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
+            <!-- GPU -->
             <LinearLayout
+                android:id="@+id/cardGPU"
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
-                android:layout_marginTop="8dp"
-                android:background="#03A9F4"
-                android:padding="2dp">
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txtGPU"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="GPU: --"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:text="--\nGPU"
+                    android:textColor="#111111"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#1677FF" />
+
+                <TextView
+                    android:id="@+id/txtGPUStats"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingStart="18dp"
+                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
+            <!-- Battery -->
             <LinearLayout
+                android:id="@+id/cardBattery"
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
-                android:layout_marginTop="8dp"
-                android:background="#03A9F4"
-                android:padding="2dp">
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txtBattery"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="?android:attr/colorBackground"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Battery: --"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:text="--\nBattery"
+                    android:textColor="#111111"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#1677FF" />
+
+                <TextView
+                    android:id="@+id/txtBatteryStats"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingStart="18dp"
+                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical"
-                android:text="Additional Sensors"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
-            <TextView
+            <!-- Additional Sensors -->
+            <TableLayout
                 android:id="@+id/txtSensors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:text="No additional sensors selected"
-                android:textSize="14sp"/>
+                android:layout_marginTop="12dp"
+                android:stretchColumns="1"
+                android:shrinkColumns="1" />
 
         </LinearLayout>
 
@@ -139,25 +220,38 @@
     <!-- Fixed bottom navigation -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginTop="6dp"
-        android:background="#03A9F4"
-        android:padding="2dp"
-        android:orientation="horizontal">
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
 
         <Button
             android:id="@+id/btnRecording"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Recording"/>
+            android:background="@android:color/transparent"
+            android:text="●\nRECORD"
+            android:textColor="#666666"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="42dp"
+            android:background="#DDDDDD" />
 
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Settings"/>
+            android:background="@android:color/transparent"
+            android:text="⚙\nSETTINGS"
+            android:textColor="#666666"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
