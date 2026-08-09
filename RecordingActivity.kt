@@ -527,6 +527,41 @@ class RecordingActivity : AppCompatActivity() {
 
         logTable.addView(row)
     }
+    private fun addCell(
+        row: TableRow,
+        text: String,
+        header: Boolean = false
+    ) {
+        val cell =
+            TextView(this)
+
+        cell.text = text
+        cell.gravity = Gravity.CENTER
+        cell.setPadding(
+            16,
+            10,
+            16,
+            10
+        )
+
+        cell.textSize =
+            if (header) 13f else 12f
+
+        if (header) {
+            cell.setTypeface(
+                null,
+                android.graphics.Typeface.BOLD
+            )
+        }
+
+        cell.layoutParams =
+            TableRow.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+        row.addView(cell)
+    }
     private fun addEmptyRow() {
         val row =
             TableRow(this)
