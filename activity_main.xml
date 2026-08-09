@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="?android:attr/colorBackground">
 
     <!-- Header -->
     <LinearLayout
@@ -14,7 +14,7 @@
         android:layout_height="58dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#FFFFFF">
+        android:background="?android:attr/colorBackground">
 
         <Space
             android:layout_width="48dp"
@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Monitor"
-            android:textColor="#111111"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="⋮"
-            android:textColor="#111111"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="28sp" />
 
     </LinearLayout>
@@ -44,7 +44,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#DDDDDD" />
+        android:background="?android:attr/textColorSecondary"
+        android:alpha="0.25" />
 
     <!-- Refresh rate -->
     <LinearLayout
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Refresh Rate"
-            android:textColor="#1267FF"
+            android:textColor="@color/primary_blue"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -73,7 +74,7 @@
 
     </LinearLayout>
 
-    <!-- Status kept for existing logic -->
+    <!-- Status is kept for MainActivity -->
     <TextView
         android:id="@+id/txtStatus"
         android:layout_width="match_parent"
@@ -103,7 +104,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_temperature_card">
 
                 <TextView
                     android:id="@+id/txtCPU"
@@ -111,14 +113,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--\nCPU"
-                    android:textColor="#111111"
+                    android:text="--&#10;CPU"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp" />
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#1677FF" />
+                    android:background="@color/primary_blue" />
 
                 <TextView
                     android:id="@+id/txtCPUStats"
@@ -127,7 +129,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
-                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -139,7 +141,8 @@
                 android:layout_height="105dp"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_temperature_card">
 
                 <TextView
                     android:id="@+id/txtGPU"
@@ -147,14 +150,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--\nGPU"
-                    android:textColor="#111111"
+                    android:text="--&#10;GPU"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp" />
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#1677FF" />
+                    android:background="@color/primary_blue" />
 
                 <TextView
                     android:id="@+id/txtGPUStats"
@@ -163,7 +166,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
-                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -175,7 +178,8 @@
                 android:layout_height="105dp"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_temperature_card">
 
                 <TextView
                     android:id="@+id/txtBattery"
@@ -183,14 +187,14 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="--\nBattery"
-                    android:textColor="#111111"
+                    android:text="--&#10;Battery"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp" />
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#1677FF" />
+                    android:background="@color/primary_blue" />
 
                 <TextView
                     android:id="@+id/txtBatteryStats"
@@ -199,7 +203,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
-                    android:text="MAX   --\nMIN    --\nAVG    --"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="15sp" />
 
             </LinearLayout>
@@ -210,8 +214,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:stretchColumns="1"
-                android:shrinkColumns="1" />
+                android:stretchColumns="0"
+                android:shrinkColumns="0" />
 
         </LinearLayout>
 
@@ -223,7 +227,7 @@
         android:layout_height="72dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#FFFFFF"
+        android:background="?android:attr/colorBackground"
         android:elevation="8dp">
 
         <Button
@@ -232,15 +236,16 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="●\nRECORD"
-            android:textColor="#666666"
+            android:text="●&#10;RECORD"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="13sp"
             android:textStyle="bold" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="42dp"
-            android:background="#DDDDDD" />
+            android:background="?android:attr/textColorSecondary"
+            android:alpha="0.25" />
 
         <Button
             android:id="@+id/btnSettings"
@@ -248,11 +253,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="⚙\nSETTINGS"
-            android:textColor="#666666"
+            android:text="⚙&#10;SETTINGS"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="13sp"
             android:textStyle="bold" />
 
     </LinearLayout>
 
 </LinearLayout>
+
