@@ -498,32 +498,6 @@ class RecordingActivity : AppCompatActivity() {
         txtBatteryAvg.text =
             "${statistics.batteryAverage?.let { formatTemperature(it) } ?: "--"} °C"
 
-        txtCPUStats.text =
-            buildStatsText(
-                statistics.cpuMax,
-                statistics.cpuMin,
-                statistics.cpuAverage
-            )
-
-        txtGPUStats.text =
-            buildStatsText(
-                statistics.gpuMax,
-                statistics.gpuMin,
-                statistics.gpuAverage
-            )
-
-        txtBatteryStats.text =
-            buildStatsText(
-                statistics.batteryMax,
-                statistics.batteryMin,
-                statistics.batteryAverage
-            )
-
-        txtBattery.text =
-            sample.battery?.let {
-                "${formatTemperature(it)} °C\nBattery"
-            } ?: "--\nBattery"
-
     }
     private fun buildCurrentText(
         name: String,
