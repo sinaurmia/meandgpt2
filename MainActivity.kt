@@ -28,6 +28,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,9 +58,30 @@ class MainActivity : AppCompatActivity() {
     private var refreshInterval = 1000L
     private var updating = false
 
-    private val blue = Color.rgb(18, 103, 255)
-    private val red = Color.rgb(235, 45, 45)
-    private val black = Color.rgb(20, 20, 20)
+    private val blue: Int
+        get() = ContextCompat.getColor(
+            this,
+            R.color.primary_blue
+        )
+
+    private val red: Int
+        get() = ContextCompat.getColor(
+            this,
+            R.color.temperature_max
+        )
+
+    private val black: Int
+        get() {
+            val typedValue = android.util.TypedValue()
+
+            theme.resolveAttribute(
+                android.R.attr.textColorPrimary,
+                typedValue,
+                true
+            )
+
+            return typedValue.data
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,30 +181,64 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun styleCards() {
-
         val cards = listOf(
             findViewById<View>(R.id.cardCPU),
             findViewById<View>(R.id.cardGPU),
             findViewById<View>(R.id.cardBattery)
         )
 
+        val backgroundColor =
+            ContextCompat.getColor(
+                this,
+                if (isDarkTheme()) {
+                    R.color.dark_surface
+                } else {
+                    R.color.light_surface
+                }
+            )
+
         cards.forEach {
             it.background =
                 roundedBorder(
                     blue,
-                    Color.WHITE,
+                    backgroundColor,
                     1.5f,
                     6f
                 )
         }
     }
+    private fun isDarkTheme(): Boolean {
+        return (resources.configuration.uiMode and
+                android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+    }
 
     private fun styleRefreshSpinner() {
 
+        val borderColor =
+            ContextCompat.getColor(
+                this,
+                if (isDarkTheme()) {
+                    R.color.dark_border
+                } else {
+                    R.color.light_border
+                }
+            )
+
+        val backgroundColor =
+            ContextCompat.getColor(
+                this,
+                if (isDarkTheme()) {
+                    R.color.dark_surface
+                } else {
+                    R.color.light_surface
+                }
+            )
+
         spRefresh.background =
             roundedBorder(
-                Color.rgb(215, 220, 228),
-                Color.WHITE,
+                borderColor,
+                backgroundColor,
                 1f,
                 6f
             )
@@ -190,12 +246,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun styleBottomButtons() {
 
+        val secondaryTextColor =
+            ContextCompat.getColor(
+                this,
+                if (isDarkTheme()) {
+                    R.color.dark_secondary_text
+                } else {
+                    R.color.light_secondary_text
+                }
+            )
+
         btnRecording.setTextColor(
-            Color.rgb(105, 105, 105)
+            secondaryTextColor
         )
 
         btnSettings.setTextColor(
-            Color.rgb(105, 105, 105)
+            secondaryTextColor
         )
 
         btnRecording.gravity =
@@ -651,10 +717,20 @@ class MainActivity : AppCompatActivity() {
                         .toInt()
             }
 
+        val backgroundColor =
+            ContextCompat.getColor(
+                this,
+                if (isDarkTheme()) {
+                    R.color.dark_surface
+                } else {
+                    R.color.light_surface
+                }
+            )
+
         row.background =
             roundedBorder(
                 blue,
-                Color.WHITE,
+                backgroundColor,
                 1.5f,
                 6f
             )
@@ -665,8 +741,7 @@ class MainActivity : AppCompatActivity() {
         nameView.text =
             sensorName
 
-        nameView.textColor =
-            blue
+        nameView.setTextColor(blue)
 
         nameView.textSize =
             14f
@@ -695,8 +770,7 @@ class MainActivity : AppCompatActivity() {
             else
                 "$temperature °C"
 
-        valueView.textColor =
-            blue
+        valueView.setTextColor(blue)
 
         valueView.textSize =
             14f
