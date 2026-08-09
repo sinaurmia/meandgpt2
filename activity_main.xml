@@ -47,12 +47,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="14dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="6dp"
         android:background="@drawable/bg_refresh">
 
         <TextView
@@ -66,12 +66,12 @@
 
         <Spinner
             android:id="@+id/spRefresh"
-            android:layout_width="230dp"
-            android:layout_height="46dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"/>
+            android:layout_width="220dp"
+            android:layout_height="44dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"/>
 
     </LinearLayout>
 
@@ -90,10 +90,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="12dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="14dp">
+            android:paddingStart="18dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
 
             <!-- CPU -->
@@ -104,7 +106,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp">
 
@@ -234,11 +236,11 @@
                 android:id="@+id/cardGPU"
                 android:layout_width="match_parent"
                 android:layout_height="112dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp">
 
@@ -368,11 +370,11 @@
                 android:id="@+id/cardBattery"
                 android:layout_width="match_parent"
                 android:layout_height="112dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_temperature_card"
-                android:elevation="3dp"
+                android:elevation="4dp"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp">
 
@@ -502,7 +504,7 @@
                 android:id="@+id/txtSensors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:stretchColumns="0"/>
 
         </LinearLayout>
