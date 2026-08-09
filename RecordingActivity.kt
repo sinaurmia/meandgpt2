@@ -223,7 +223,7 @@ class RecordingActivity : AppCompatActivity() {
         recordingStartCount =
             storage.count()
 
-        txtLog.text = ""
+        logTable.removeAllViews()
 
         clearRecordingDisplay()
 
@@ -272,7 +272,7 @@ class RecordingActivity : AppCompatActivity() {
         recordingStartCount = 0
 
         txtStatus.text = "Stopped"
-        txtLog.text = ""
+        logTable.removeAllViews()
 
         clearRecordingDisplay()
     }
