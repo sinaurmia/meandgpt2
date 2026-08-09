@@ -21,6 +21,8 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
 import android.widget.LinearLayout
+import android.view.View
+import android.widget.HorizontalScrollView
 
 class RecordingActivity : AppCompatActivity() {
 
