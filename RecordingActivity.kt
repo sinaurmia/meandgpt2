@@ -48,7 +48,7 @@ class RecordingActivity : AppCompatActivity() {
     private lateinit var txtCPUMax: TextView
     private lateinit var txtCPUMin: TextView
     private lateinit var txtCPUAvg: TextView
-
+    private lateinit var cpuTemperatureChart: CpuTemperatureChartView
     private lateinit var txtGPUMax: TextView
     private lateinit var txtGPUMin: TextView
     private lateinit var txtGPUAvg: TextView
@@ -138,6 +138,8 @@ class RecordingActivity : AppCompatActivity() {
         logTable =
             findViewById(R.id.logTable)
         logContainer = findViewById(R.id.logContainer)
+        cpuTemperatureChart =
+            findViewById(R.id.cpuTemperatureChart)
 
         btnStart = findViewById(R.id.btnStart)
         btnStop = findViewById(R.id.btnStop)
@@ -463,6 +465,7 @@ class RecordingActivity : AppCompatActivity() {
         txtStatus.text = "Stopped"
 
         logTable.removeAllViews()
+        cpuTemperatureChart.clearData()
 
         btnStart.isEnabled = true
         btnStop.isEnabled = false
@@ -538,6 +541,7 @@ class RecordingActivity : AppCompatActivity() {
             return
 
         val sample = storage.getLast()
+        cpuTemperatureChart.addTemperature(sample?.cpu)
 
         val currentCount = storage.count()
         txtTotalRows.text =
