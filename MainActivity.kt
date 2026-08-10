@@ -223,6 +223,12 @@ class MainActivity : AppCompatActivity() {
                 }
             )
 
+        val darkBorderColor =
+            ContextCompat.getColor(
+                this,
+                R.color.dark_border
+            )
+
         cards.forEach { card ->
 
             val drawable = GradientDrawable()
@@ -238,10 +244,22 @@ class MainActivity : AppCompatActivity() {
                 12f *
                         resources.displayMetrics.density
 
+            if (isDarkTheme()) {
+                drawable.setStroke(
+                    (
+                            1f *
+                                    resources.displayMetrics.density
+                            )
+                        .toInt()
+                        .coerceAtLeast(1),
+                    darkBorderColor
+                )
+            }
+
             card.background = drawable
 
             card.elevation =
-                3f *
+                4f *
                         resources.displayMetrics.density
         }
     }
@@ -307,6 +325,38 @@ class MainActivity : AppCompatActivity() {
             0,
             2
         )
+
+        if (isDarkTheme()) {
+
+            val bottomNavigation =
+                findViewById<View>(
+                    R.id.bottomNavigation
+                )
+
+            val backgroundColor =
+                ContextCompat.getColor(
+                    this,
+                    R.color.dark_background
+                )
+
+            val borderColor =
+                ContextCompat.getColor(
+                    this,
+                    R.color.dark_border
+                )
+
+            bottomNavigation.background =
+                roundedBorder(
+                    borderColor,
+                    backgroundColor,
+                    1f,
+                    14f
+                )
+
+            bottomNavigation.elevation =
+                6f *
+                        resources.displayMetrics.density
+        }
     }
 
     private fun roundedBorder(
@@ -753,19 +803,23 @@ class MainActivity : AppCompatActivity() {
         temperature: String
     ): TableRow {
 
+        val density =
+            resources.displayMetrics.density
+
         val row =
             TableRow(this)
 
         row.layoutParams =
             TableLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                (46 * density).toInt()
             ).apply {
 
                 topMargin =
-                    (6 *
-                            resources.displayMetrics.density)
-                        .toInt()
+                    (6 * density).toInt()
+
+                bottomMargin =
+                    (2 * density).toInt()
             }
 
         val backgroundColor =
@@ -789,16 +843,61 @@ class MainActivity : AppCompatActivity() {
         )
 
         background.cornerRadius =
-            10f *
-                    resources.displayMetrics.density
+            10f * density
+
+        if (isDarkTheme()) {
+
+            background.setStroke(
+                (
+                        1f * density
+                        )
+                    .toInt()
+                    .coerceAtLeast(1),
+                ContextCompat.getColor(
+                    this,
+                    R.color.dark_border
+                )
+            )
+        }
 
         row.background =
             background
 
         row.elevation =
-            2.5f *
-                    resources.displayMetrics.density
+            2.5f * density
 
+
+        /*
+         * Thermometer icon
+         */
+
+        val iconView =
+            android.widget.ImageView(this)
+
+        iconView.setImageResource(
+            R.drawable.ic_thermometer
+        )
+
+        iconView.layoutParams =
+            TableRow.LayoutParams(
+                (22 * density).toInt(),
+                (22 * density).toInt()
+            ).apply {
+
+                gravity =
+                    Gravity.CENTER_VERTICAL
+
+                marginStart =
+                    (12 * density).toInt()
+
+                marginEnd =
+                    (8 * density).toInt()
+            }
+
+
+        /*
+         * Sensor name
+         */
 
         val nameView =
             TextView(this)
@@ -822,12 +921,23 @@ class MainActivity : AppCompatActivity() {
             Gravity.CENTER_VERTICAL
 
         nameView.setPadding(
-            12,
-            8,
-            8,
-            8
+            0,
+            0,
+            (8 * density).toInt(),
+            0
         )
 
+        nameView.layoutParams =
+            TableRow.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1f
+            )
+
+
+        /*
+         * Temperature
+         */
 
         val valueView =
             TextView(this)
@@ -856,28 +966,30 @@ class MainActivity : AppCompatActivity() {
                     Gravity.END
 
         valueView.setPadding(
-            8,
-            8,
-            12,
-            8
+            (8 * density).toInt(),
+            0,
+            (12 * density).toInt(),
+            0
         )
-
-
-        nameView.layoutParams =
-            TableRow.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            )
 
         valueView.layoutParams =
             TableRow.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT
             )
 
-        row.addView(nameView)
-        row.addView(valueView)
+
+        row.addView(
+            iconView
+        )
+
+        row.addView(
+            nameView
+        )
+
+        row.addView(
+            valueView
+        )
 
         return row
     }
