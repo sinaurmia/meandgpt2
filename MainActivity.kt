@@ -190,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         cpuTemperatureChart =
             findViewById(R.id.cpuTemperatureChart)
 
+        cpuTemperatureChart.maxPoints = 60
 
         btnRecording =
             findViewById(R.id.btnRecording)

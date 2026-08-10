@@ -28,7 +28,19 @@ class CpuTemperatureChartView @JvmOverloads constructor(
     )
 
     private val points = mutableListOf<Point>()
+    private var maxPointsInternal = 60
 
+    var maxPoints: Int
+        get() = maxPointsInternal
+        set(value) {
+            maxPointsInternal = value.coerceAtLeast(1)
+
+            while (points.size > maxPointsInternal) {
+                points.removeAt(0)
+            }
+
+            invalidate()
+        }
     private val density =
         resources.displayMetrics.density
 
@@ -219,9 +231,9 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         )
 
         /*
-         * Keep a maximum of 300 samples.
-         */
-        if (points.size > 300) {
+ * Keep only the configured number of samples.
+ */
+        while (points.size > maxPointsInternal) {
             points.removeAt(0)
         }
 
@@ -462,10 +474,10 @@ class CpuTemperatureChartView @JvmOverloads constructor(
     ) {
 
         /*
-         * Show up to 300 samples.
-         */
+ * Show up to the configured number of samples.
+ */
         val visiblePoints =
-            points.takeLast(300)
+            points.takeLast(maxPointsInternal)
 
         if (visiblePoints.isEmpty()) {
             return
@@ -677,7 +689,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         }
 
         val visiblePoints =
-            points.takeLast(300)
+            points.takeLast(maxPointsInternal)
 
         if (visiblePoints.isEmpty()) {
             return
