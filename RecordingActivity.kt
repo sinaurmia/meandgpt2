@@ -138,8 +138,11 @@ class RecordingActivity : AppCompatActivity() {
         logTable =
             findViewById(R.id.logTable)
         logContainer = findViewById(R.id.logContainer)
+
         cpuTemperatureChart =
             findViewById(R.id.cpuTemperatureChart)
+
+        cpuTemperatureChart.maxPoints = 300
 
         btnStart = findViewById(R.id.btnStart)
         btnStop = findViewById(R.id.btnStop)
