@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -158,17 +159,13 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:background="@android:color/transparent"
-            android:text="←&#10;BACK"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:text="⬅&#10;BACK"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="12sp"
             android:textStyle="bold"
             android:gravity="center"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="38dp"
-            android:background="@color/divider"
-            android:alpha="0.25"/>
 
         <Button
             android:id="@+id/btnSave"
@@ -182,7 +179,10 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:background="@android:color/transparent"
-            android:text="✓&#10;SAVE"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:enabled="false"
+            android:text="✔&#10;SAVE"
             android:textColor="@color/primary_blue"
             android:textSize="12sp"
             android:textStyle="bold"
