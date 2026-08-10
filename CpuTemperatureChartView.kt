@@ -35,125 +35,178 @@ class CpuTemperatureChartView @JvmOverloads constructor(
     private fun dp(value: Float): Float =
         value * density
 
-    private val chartLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.STROKE
-        strokeWidth = dp(2.5f)
-        strokeCap = Paint.Cap.ROUND
-        strokeJoin = Paint.Join.ROUND
-    }
+    private val chartLinePaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = dp(2.5f)
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
 
-    private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-    }
+    private val fillPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.FILL
+        }
 
-    private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.STROKE
-        strokeWidth = dp(1f)
-    }
+    private val gridPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = dp(1f)
+        }
 
-    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Typeface.create(
-            Typeface.DEFAULT,
-            Typeface.NORMAL
-        )
-        textSize = dp(12f)
-    }
+    private val textPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = Typeface.create(
+                Typeface.DEFAULT,
+                Typeface.NORMAL
+            )
+            textSize = dp(12f)
+        }
 
-    private val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Typeface.create(
-            Typeface.DEFAULT,
-            Typeface.BOLD
-        )
-        textSize = dp(18f)
-    }
+    private val titlePaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = Typeface.create(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+            )
+            textSize = dp(18f)
+        }
 
-    private val legendPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Typeface.create(
-            Typeface.DEFAULT,
-            Typeface.NORMAL
-        )
-        textSize = dp(16f)
-    }
+    private val legendPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = Typeface.create(
+                Typeface.DEFAULT,
+                Typeface.NORMAL
+            )
+            textSize = dp(16f)
+        }
 
-    private val legendLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.STROKE
-        strokeWidth = dp(3f)
-        strokeCap = Paint.Cap.ROUND
-    }
+    private val legendLinePaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = dp(3f)
+            strokeCap = Paint.Cap.ROUND
+        }
 
-    private val pointPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-    }
+    private val pointPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.FILL
+        }
+
+    private val borderPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = dp(1f)
+        }
 
     private val timeFormat =
-        SimpleDateFormat("HH:mm", Locale.getDefault())
+        SimpleDateFormat(
+            "HH:mm",
+            Locale.getDefault()
+        )
 
     private var lineColor = 0
     private var primaryTextColor = 0
     private var secondaryTextColor = 0
     private var gridColor = 0
+    private var darkMode = false
 
     init {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        setLayerType(
+            View.LAYER_TYPE_SOFTWARE,
+            null
+        )
+
         updateThemeColors()
     }
 
     private fun updateThemeColors() {
 
-        val dark =
+        darkMode =
             (resources.configuration.uiMode and
-                    android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
-                    android.content.res.Configuration.UI_MODE_NIGHT_YES
+                    android.content.res.Configuration
+                        .UI_MODE_NIGHT_MASK) ==
+                    android.content.res.Configuration
+                        .UI_MODE_NIGHT_YES
 
-        lineColor = ContextCompat.getColor(
-            context,
-            if (dark) {
-                R.color.primary_blue_dark
+        lineColor =
+            ContextCompat.getColor(
+                context,
+                if (darkMode) {
+                    R.color.primary_blue_dark
+                } else {
+                    R.color.primary_blue
+                }
+            )
+
+        primaryTextColor =
+            ContextCompat.getColor(
+                context,
+                if (darkMode) {
+                    R.color.dark_text
+                } else {
+                    R.color.light_text
+                }
+            )
+
+        secondaryTextColor =
+            ContextCompat.getColor(
+                context,
+                if (darkMode) {
+                    R.color.dark_secondary_text
+                } else {
+                    R.color.light_secondary_text
+                }
+            )
+
+        gridColor =
+            ContextCompat.getColor(
+                context,
+                if (darkMode) {
+                    R.color.dark_border
+                } else {
+                    R.color.light_border
+                }
+            )
+
+        chartLinePaint.color =
+            lineColor
+
+        legendLinePaint.color =
+            lineColor
+
+        titlePaint.color =
+            primaryTextColor
+
+        legendPaint.color =
+            secondaryTextColor
+
+        textPaint.color =
+            secondaryTextColor
+
+        gridPaint.color =
+            gridColor
+
+        borderPaint.color =
+            if (darkMode) {
+                ContextCompat.getColor(
+                    context,
+                    R.color.dark_border
+                )
             } else {
-                R.color.primary_blue
+                ContextCompat.getColor(
+                    context,
+                    R.color.light_border
+                )
             }
-        )
-
-        primaryTextColor = ContextCompat.getColor(
-            context,
-            if (dark) {
-                R.color.dark_text
-            } else {
-                R.color.light_text
-            }
-        )
-
-        secondaryTextColor = ContextCompat.getColor(
-            context,
-            if (dark) {
-                R.color.dark_secondary_text
-            } else {
-                R.color.light_secondary_text
-            }
-        )
-
-        gridColor = ContextCompat.getColor(
-            context,
-            if (dark) {
-                R.color.dark_border
-            } else {
-                R.color.light_border
-            }
-        )
-
-        chartLinePaint.color = lineColor
-        legendLinePaint.color = lineColor
-        titlePaint.color = primaryTextColor
-        legendPaint.color = secondaryTextColor
-        textPaint.color = secondaryTextColor
-
-        gridPaint.color = gridColor
     }
 
     fun addTemperature(
         temperature: Float?,
-        timestamp: Long = System.currentTimeMillis()
+        timestamp: Long =
+            System.currentTimeMillis()
     ) {
+
         if (temperature == null) {
             return
         }
@@ -166,10 +219,9 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         )
 
         /*
-         * Keep enough history for the visible chart without
-         * allowing unlimited memory growth.
+         * Keep a maximum of 300 samples.
          */
-        if (points.size > 120) {
+        if (points.size > 300) {
             points.removeAt(0)
         }
 
@@ -182,51 +234,98 @@ class CpuTemperatureChartView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
+
         super.onDraw(canvas)
 
         updateThemeColors()
 
-        val width = width.toFloat()
-        val height = height.toFloat()
+        val width =
+            width.toFloat()
 
-        if (width <= 0f || height <= 0f) {
+        val height =
+            height.toFloat()
+
+        if (width <= 0f ||
+            height <= 0f
+        ) {
             return
         }
 
         /*
          * Internal chart area.
+         *
+         * Extra right padding keeps the newest
+         * point/time label away from the card edge.
          */
-        val left = dp(42f)
-        val right = width - dp(14f)
-        val top = dp(60f)
-        val bottom = height - dp(40f)
+        val left =
+            dp(42f)
 
-        if (right <= left || bottom <= top) {
+        val right =
+            width - dp(22f)
+
+        val top =
+            dp(60f)
+
+        val bottom =
+            height - dp(40f)
+
+        if (right <= left ||
+            bottom <= top
+        ) {
             return
         }
 
-        drawTitle(canvas, width)
-        drawLegend(canvas, width)
+        /*
+         * Subtle border for dark mode.
+         */
+        if (darkMode) {
+            canvas.drawRoundRect(
+                dp(0.5f),
+                dp(0.5f),
+                width - dp(0.5f),
+                height - dp(0.5f),
+                dp(6f),
+                dp(6f),
+                borderPaint
+            )
+        }
 
-        val chartTop = top
-        val chartBottom = bottom
+        drawTitle(
+            canvas,
+            width
+        )
+
+        drawLegend(
+            canvas,
+            width
+        )
+
+        val chartTop =
+            top
+
+        val chartBottom =
+            bottom
 
         val chartHeight =
             chartBottom - chartTop
 
         /*
-         * Fixed 0..80 °C scale, matching chart-ui.png.
+         * CPU temperature range:
+         * 20°C -> 100°C
          */
-        val maxTemperature = 80f
-        val minTemperature = 0f
+        val maxTemperature =
+            100f
+
+        val minTemperature =
+            20f
 
         val gridValues =
             floatArrayOf(
-                0f,
                 20f,
                 40f,
                 60f,
-                80f
+                80f,
+                100f
             )
 
         /*
@@ -236,8 +335,10 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
             val y =
                 chartBottom -
-                        ((value - minTemperature) /
-                                (maxTemperature - minTemperature)) *
+                        ((value -
+                                minTemperature) /
+                                (maxTemperature -
+                                        minTemperature)) *
                         chartHeight
 
             canvas.drawLine(
@@ -260,12 +361,14 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         }
 
         if (points.isEmpty()) {
+
             drawTimePlaceholder(
                 canvas,
                 left,
                 right,
                 chartBottom
             )
+
             return
         }
 
@@ -291,6 +394,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         canvas: Canvas,
         width: Float
     ) {
+
         titlePaint.textAlign =
             Paint.Align.LEFT
 
@@ -306,6 +410,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         canvas: Canvas,
         width: Float
     ) {
+
         val legendText =
             "CPU"
 
@@ -313,16 +418,22 @@ class CpuTemperatureChartView @JvmOverloads constructor(
             Paint.Align.LEFT
 
         val textWidth =
-            legendPaint.measureText(legendText)
+            legendPaint.measureText(
+                legendText
+            )
 
         val textX =
-            width - dp(22f) - textWidth
+            width -
+                    dp(22f) -
+                    textWidth
 
         val lineEnd =
-            textX - dp(10f)
+            textX -
+                    dp(10f)
 
         val lineStart =
-            lineEnd - dp(18f)
+            lineEnd -
+                    dp(18f)
 
         canvas.drawLine(
             lineStart,
@@ -350,8 +461,11 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         minTemperature: Float
     ) {
 
+        /*
+         * Show up to 300 samples.
+         */
         val visiblePoints =
-            points.takeLast(60)
+            points.takeLast(300)
 
         if (visiblePoints.isEmpty()) {
             return
@@ -366,15 +480,21 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         val fillPath =
             Path()
 
-        visiblePoints.forEachIndexed { index, point ->
+        visiblePoints.forEachIndexed {
+                index,
+                point ->
 
             val x =
                 if (pointCount == 1) {
+
                     (left + right) / 2f
+
                 } else {
+
                     left +
                             (index.toFloat() /
-                                    (pointCount - 1).toFloat()) *
+                                    (pointCount -
+                                            1).toFloat()) *
                             (right - left)
                 }
 
@@ -389,12 +509,18 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
             val y =
                 bottom -
-                        ((safeTemperature - minTemperature) /
-                                (maxTemperature - minTemperature)) *
+                        ((safeTemperature -
+                                minTemperature) /
+                                (maxTemperature -
+                                        minTemperature)) *
                         (bottom - top)
 
             if (index == 0) {
-                path.moveTo(x, y)
+
+                path.moveTo(
+                    x,
+                    y
+                )
 
                 fillPath.moveTo(
                     x,
@@ -405,20 +531,25 @@ class CpuTemperatureChartView @JvmOverloads constructor(
                     x,
                     y
                 )
+
             } else {
-                /*
-                 * Smooth cubic curve between points.
-                 */
+
                 val previous =
-                    visiblePoints[index - 1]
+                    visiblePoints[
+                        index - 1
+                    ]
 
                 val previousX =
                     if (pointCount == 1) {
+
                         x
+
                     } else {
+
                         left +
                                 ((index - 1).toFloat() /
-                                        (pointCount - 1).toFloat()) *
+                                        (pointCount -
+                                                1).toFloat()) *
                                 (right - left)
                     }
 
@@ -433,8 +564,10 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
                 val previousY =
                     bottom -
-                            ((previousTemperature - minTemperature) /
-                                    (maxTemperature - minTemperature)) *
+                            ((previousTemperature -
+                                    minTemperature) /
+                                    (maxTemperature -
+                                            minTemperature)) *
                             (bottom - top)
 
                 val controlX =
@@ -465,8 +598,11 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
         val lastX =
             if (pointCount == 1) {
+
                 (left + right) / 2f
+
             } else {
+
                 right
             }
 
@@ -481,8 +617,10 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
         val lastY =
             bottom -
-                    ((lastTemperature - minTemperature) /
-                            (maxTemperature - minTemperature)) *
+                    ((lastTemperature -
+                            minTemperature) /
+                            (maxTemperature -
+                                    minTemperature)) *
                     (bottom - top)
 
         fillPath.lineTo(
@@ -491,11 +629,6 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         )
 
         fillPath.close()
-
-        val dark =
-            (resources.configuration.uiMode and
-                    android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
-                    android.content.res.Configuration.UI_MODE_NIGHT_YES
 
         fillPaint.shader =
             LinearGradient(
@@ -519,7 +652,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         )
 
         /*
-         * Last point.
+         * Latest point.
          */
         pointPaint.color =
             lineColor
@@ -544,7 +677,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         }
 
         val visiblePoints =
-            points.takeLast(60)
+            points.takeLast(300)
 
         if (visiblePoints.isEmpty()) {
             return
@@ -554,18 +687,26 @@ class CpuTemperatureChartView @JvmOverloads constructor(
             Paint.Align.CENTER
 
         val positions =
-            min(6, visiblePoints.size)
+            min(
+                6,
+                visiblePoints.size
+            )
 
         for (i in 0 until positions) {
 
             val index =
                 if (positions == 1) {
+
                     0
+
                 } else {
-                    ((visiblePoints.size - 1) *
-                            i.toFloat() /
-                            (positions - 1).toFloat())
-                        .toInt()
+
+                    (
+                            (visiblePoints.size - 1) *
+                                    i.toFloat() /
+                                    (positions - 1)
+                                        .toFloat()
+                            ).toInt()
                 }
 
             val point =
@@ -573,11 +714,15 @@ class CpuTemperatureChartView @JvmOverloads constructor(
 
             val x =
                 if (positions == 1) {
+
                     (left + right) / 2f
+
                 } else {
+
                     left +
                             (index.toFloat() /
-                                    (visiblePoints.size - 1).toFloat()) *
+                                    (visiblePoints.size -
+                                            1).toFloat()) *
                             (right - left)
                 }
 
@@ -598,6 +743,7 @@ class CpuTemperatureChartView @JvmOverloads constructor(
         right: Float,
         bottom: Float
     ) {
+
         textPaint.textAlign =
             Paint.Align.CENTER
 
