@@ -195,7 +195,6 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.btnMenu)
 
         styleCards()
-        styleRefreshSpinner()
         styleBottomButtons()
 
         setupRefreshRate()
@@ -269,9 +268,6 @@ class MainActivity : AppCompatActivity() {
                 android.content.res.Configuration.UI_MODE_NIGHT_YES
     }
 
-    private fun styleRefreshSpinner() {
-        spRefresh.background = null
-    }
 
     private fun styleBottomButtons() {
 
@@ -817,11 +813,25 @@ class MainActivity : AppCompatActivity() {
             0
         )
 
-        row.background =
+        val sensorBackground =
             ContextCompat.getDrawable(
                 this,
                 R.drawable.bg_temperature_card
+            )?.mutate()
+
+        if (isDarkTheme() && sensorBackground is GradientDrawable) {
+            sensorBackground.setStroke(
+                (
+                        1f * resources.displayMetrics.density
+                        ).toInt().coerceAtLeast(1),
+                ContextCompat.getColor(
+                    this,
+                    R.color.dark_border
+                )
             )
+        }
+
+        row.background = sensorBackground
 
         row.elevation =
             dp(3).toFloat()
