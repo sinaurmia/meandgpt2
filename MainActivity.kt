@@ -737,18 +737,30 @@ class MainActivity : AppCompatActivity() {
     private fun updateSensorTable(
         sensors: Map<String, Float>
     ) {
-
         txtSensors.removeAllViews()
 
         if (sensors.isEmpty()) {
 
-            val row =
-                createSensorRow(
-                    "No additional sensors",
-                    "--"
-                )
+            val emptyText = TextView(this)
 
-            txtSensors.addView(row)
+            emptyText.text = "No additional sensors"
+            emptyText.textSize = 13f
+            emptyText.setTextColor(textPrimary)
+            emptyText.gravity = Gravity.CENTER
+
+            val density =
+                resources.displayMetrics.density
+
+            emptyText.layoutParams =
+                TableLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (40 * density).toInt()
+                ).apply {
+                    topMargin = (4 * density).toInt()
+                    bottomMargin = (4 * density).toInt()
+                }
+
+            txtSensors.addView(emptyText)
 
             return
         }
@@ -771,61 +783,105 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+
     private fun createSensorRow(
         sensorName: String,
         temperature: String
     ): TableRow {
 
-        val density = resources.displayMetrics.density
+        val density =
+            resources.displayMetrics.density
 
         fun dp(value: Int): Int {
-            return (value * density).toInt()
+            return (
+                    value * density
+                    ).toInt()
         }
 
-        val row = TableRow(this)
+        val row =
+            TableRow(this)
 
         row.layoutParams =
             TableLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(52)
+                dp(48)
             ).apply {
-                topMargin = dp(8)
+
+                leftMargin = dp(8)
+                rightMargin = dp(8)
+
+                topMargin = dp(3)
+                bottomMargin = dp(3)
             }
 
-        row.background = ContextCompat.getDrawable(
-            this,
-            R.drawable.bg_temperature_card
+        row.background =
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.bg_temperature_card
+            )
+
+        row.gravity =
+            Gravity.CENTER_VERTICAL
+
+
+        /*
+         * Thermometer icon
+         */
+        val iconView =
+            android.widget.ImageView(this)
+
+        iconView.setImageResource(
+            R.drawable.ic_thermometer
         )
-
-        row.gravity = Gravity.CENTER_VERTICAL
-
-        val iconView = TextView(this)
-
-        iconView.text = "♨"
-        iconView.textSize = 18f
-        iconView.setTextColor(textPrimary)
-        iconView.gravity = Gravity.CENTER
 
         iconView.layoutParams =
             TableRow.LayoutParams(
-                dp(36),
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+                dp(24),
+                dp(24)
+            ).apply {
 
-        val nameView = TextView(this)
+                marginStart = dp(10)
+                marginEnd = dp(8)
 
-        nameView.text = sensorName
-        nameView.setTextColor(textPrimary)
-        nameView.textSize = 14f
+                gravity =
+                    Gravity.CENTER_VERTICAL
+            }
+
+
+        /*
+         * Sensor name
+         */
+        val nameView =
+            TextView(this)
+
+        nameView.text =
+            sensorName
+
+        nameView.setTextColor(
+            textPrimary
+        )
+
+        nameView.textSize =
+            14f
+
         nameView.setTypeface(
             null,
             Typeface.BOLD
         )
-        nameView.gravity = Gravity.CENTER_VERTICAL
+
+        nameView.gravity =
+            Gravity.CENTER_VERTICAL
+
+        nameView.maxLines =
+            1
+
+        nameView.ellipsize =
+            android.text.TextUtils.TruncateAt.END
+
         nameView.setPadding(
             0,
             0,
-            dp(8),
+            dp(6),
             0
         )
 
@@ -836,29 +892,40 @@ class MainActivity : AppCompatActivity() {
                 1f
             )
 
-        val valueView = TextView(this)
+
+        /*
+         * Temperature
+         */
+        val valueView =
+            TextView(this)
 
         valueView.text =
             if (temperature == "--") {
-                temperature
+                "--"
             } else {
                 "$temperature °C"
             }
 
-        valueView.setTextColor(textPrimary)
-        valueView.textSize = 14f
+        valueView.setTextColor(
+            textPrimary
+        )
+
+        valueView.textSize =
+            14f
+
         valueView.setTypeface(
             null,
             Typeface.BOLD
         )
 
         valueView.gravity =
-            Gravity.CENTER_VERTICAL or Gravity.END
+            Gravity.CENTER_VERTICAL or
+                    Gravity.END
 
         valueView.setPadding(
-            dp(8),
+            dp(6),
             0,
-            dp(14),
+            dp(12),
             0
         )
 
@@ -868,22 +935,61 @@ class MainActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
 
-        row.addView(iconView)
-        row.addView(nameView)
-        row.addView(valueView)
+
+        row.addView(
+            iconView
+        )
+
+        row.addView(
+            nameView
+        )
+
+        row.addView(
+            valueView
+        )
 
         return row
     }
+
 
     private fun clearSensorTable() {
 
         txtSensors.removeAllViews()
 
+        val emptyText =
+            TextView(this)
+
+        emptyText.text =
+            "No additional sensors"
+
+        emptyText.textSize =
+            13f
+
+        emptyText.setTextColor(
+            textPrimary
+        )
+
+        emptyText.gravity =
+            Gravity.CENTER
+
+        val density =
+            resources.displayMetrics.density
+
+        emptyText.layoutParams =
+            TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                (40 * density).toInt()
+            ).apply {
+
+                topMargin =
+                    (4 * density).toInt()
+
+                bottomMargin =
+                    (4 * density).toInt()
+            }
+
         txtSensors.addView(
-            createSensorRow(
-                "No additional sensors",
-                "--"
-            )
+            emptyText
         )
     }
 
