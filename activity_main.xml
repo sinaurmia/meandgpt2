@@ -101,6 +101,15 @@
                     android:paddingBottom="2dp"/>
 
             </LinearLayout>
+            <!-- CPU Temperature Chart -->
+            <com.example.meandgpt2.CpuTemperatureChartView
+                android:id="@+id/cpuTemperatureChart"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_temperature_card"
+                android:elevation="4dp"/>
             <!-- CPU -->
             <LinearLayout
                 android:id="@+id/cardCPU"

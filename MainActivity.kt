@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var thermalReader: ThermalReader
     private lateinit var sensorPreferences: SensorPreferences
     private lateinit var statistics: Statistics
-
+    private lateinit var cpuTemperatureChart: CpuTemperatureChartView
     private lateinit var txtCPU: TextView
     private lateinit var txtGPU: TextView
     private lateinit var txtBattery: TextView
@@ -186,6 +186,9 @@ class MainActivity : AppCompatActivity() {
 
         spRefresh =
             findViewById(R.id.spRefresh)
+
+        cpuTemperatureChart =
+            findViewById(R.id.cpuTemperatureChart)
 
 
         btnRecording =
@@ -460,6 +463,7 @@ class MainActivity : AppCompatActivity() {
                 thermalReader.readAll()
 
             statistics.update(sample)
+            cpuTemperatureChart.addTemperature(sample.cpu)
 
             setTemperatureCard(
                 txtCPU,
