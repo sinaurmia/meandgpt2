@@ -776,127 +776,56 @@ class MainActivity : AppCompatActivity() {
         temperature: String
     ): TableRow {
 
-        val density =
-            resources.displayMetrics.density
+        val density = resources.displayMetrics.density
 
-        val row =
-            TableRow(this)
+        fun dp(value: Int): Int {
+            return (value * density).toInt()
+        }
+
+        val row = TableRow(this)
 
         row.layoutParams =
             TableLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                (46 * density).toInt()
+                dp(52)
             ).apply {
-
-                topMargin =
-                    (6 * density).toInt()
-
-                bottomMargin =
-                    (2 * density).toInt()
+                topMargin = dp(8)
             }
 
-        val backgroundColor =
-            ContextCompat.getColor(
-                this,
-                if (isDarkTheme()) {
-                    R.color.dark_surface
-                } else {
-                    R.color.light_surface
-                }
-            )
-
-        val background =
-            GradientDrawable()
-
-        background.shape =
-            GradientDrawable.RECTANGLE
-
-        background.setColor(
-            backgroundColor
+        row.background = ContextCompat.getDrawable(
+            this,
+            R.drawable.bg_temperature_card
         )
 
-        background.cornerRadius =
-            10f * density
+        row.gravity = Gravity.CENTER_VERTICAL
 
-        if (isDarkTheme()) {
+        val iconView = TextView(this)
 
-            background.setStroke(
-                (
-                        1f * density
-                        )
-                    .toInt()
-                    .coerceAtLeast(1),
-                ContextCompat.getColor(
-                    this,
-                    R.color.dark_border
-                )
-            )
-        }
-
-        row.background =
-            background
-
-        row.elevation =
-            2.5f * density
-
-
-        /*
-         * Thermometer icon
-         */
-
-        val iconView =
-            android.widget.ImageView(this)
-
-        iconView.setImageResource(
-            R.drawable.ic_thermometer
-        )
+        iconView.text = "♨"
+        iconView.textSize = 18f
+        iconView.setTextColor(textPrimary)
+        iconView.gravity = Gravity.CENTER
 
         iconView.layoutParams =
             TableRow.LayoutParams(
-                (22 * density).toInt(),
-                (22 * density).toInt()
-            ).apply {
+                dp(36),
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
 
-                gravity =
-                    Gravity.CENTER_VERTICAL
+        val nameView = TextView(this)
 
-                marginStart =
-                    (12 * density).toInt()
-
-                marginEnd =
-                    (8 * density).toInt()
-            }
-
-
-        /*
-         * Sensor name
-         */
-
-        val nameView =
-            TextView(this)
-
-        nameView.text =
-            sensorName
-
-        nameView.setTextColor(
-            textPrimary
-        )
-
-        nameView.textSize =
-            14f
-
+        nameView.text = sensorName
+        nameView.setTextColor(textPrimary)
+        nameView.textSize = 14f
         nameView.setTypeface(
             null,
             Typeface.BOLD
         )
-
-        nameView.gravity =
-            Gravity.CENTER_VERTICAL
-
+        nameView.gravity = Gravity.CENTER_VERTICAL
         nameView.setPadding(
             0,
             0,
-            (8 * density).toInt(),
+            dp(8),
             0
         )
 
@@ -907,13 +836,7 @@ class MainActivity : AppCompatActivity() {
                 1f
             )
 
-
-        /*
-         * Temperature
-         */
-
-        val valueView =
-            TextView(this)
+        val valueView = TextView(this)
 
         valueView.text =
             if (temperature == "--") {
@@ -922,26 +845,20 @@ class MainActivity : AppCompatActivity() {
                 "$temperature °C"
             }
 
-        valueView.setTextColor(
-            blue
-        )
-
-        valueView.textSize =
-            14f
-
+        valueView.setTextColor(textPrimary)
+        valueView.textSize = 14f
         valueView.setTypeface(
             null,
             Typeface.BOLD
         )
 
         valueView.gravity =
-            Gravity.CENTER_VERTICAL or
-                    Gravity.END
+            Gravity.CENTER_VERTICAL or Gravity.END
 
         valueView.setPadding(
-            (8 * density).toInt(),
+            dp(8),
             0,
-            (12 * density).toInt(),
+            dp(14),
             0
         )
 
@@ -951,18 +868,9 @@ class MainActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
 
-
-        row.addView(
-            iconView
-        )
-
-        row.addView(
-            nameView
-        )
-
-        row.addView(
-            valueView
-        )
+        row.addView(iconView)
+        row.addView(nameView)
+        row.addView(valueView)
 
         return row
     }
