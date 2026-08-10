@@ -7,7 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?android:attr/colorBackground">
+    android:background="?android:attr/colorBackground"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- Header -->
 
@@ -43,7 +45,6 @@
             android:textSize="28sp"/>
 
     </LinearLayout>
-
 
     <!-- Refresh Rate -->
 
@@ -86,7 +87,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,8 +97,12 @@
             android:paddingStart="18dp"
             android:paddingTop="12dp"
             android:paddingEnd="18dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
+
+            <!-- CPU -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,8 +112,9 @@
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
                 android:paddingStart="20dp"
-                android:layout_marginBottom="10dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/txtCPU"
@@ -158,6 +165,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -189,6 +197,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -220,11 +229,16 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <!-- GPU -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
@@ -233,8 +247,8 @@
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
                 android:paddingStart="20dp"
-                android:layout_marginBottom="10dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/txtGPU"
@@ -285,6 +299,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -316,6 +331,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -347,11 +363,16 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <!-- Battery -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
@@ -360,8 +381,8 @@
                 android:background="@drawable/bg_temperature_card"
                 android:elevation="4dp"
                 android:paddingStart="20dp"
-                android:layout_marginBottom="10dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/txtBattery"
@@ -412,6 +433,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -443,6 +465,7 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <View
@@ -474,25 +497,31 @@
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
+
             <!-- Information -->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="62dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
+                android:layout_height="68dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <TextView
                     android:id="@+id/txtStatus"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="62dp"
                     android:layout_weight="1"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
                     android:gravity="center"
                     android:background="@drawable/bg_temperature_card"
                     android:elevation="3dp"
@@ -504,9 +533,10 @@
                 <TextView
                     android:id="@+id/txtCount"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="62dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
                     android:gravity="center"
                     android:background="@drawable/bg_temperature_card"
                     android:elevation="3dp"
@@ -518,9 +548,10 @@
                 <TextView
                     android:id="@+id/txtTotalRows"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="62dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
                     android:gravity="center"
                     android:background="@drawable/bg_temperature_card"
                     android:elevation="3dp"
@@ -537,7 +568,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -641,6 +672,8 @@
                 android:elevation="3dp"
                 android:padding="1dp"
                 android:fillViewport="false"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:visibility="gone">
 
                 <TableLayout
@@ -657,6 +690,7 @@
 
 
     <!-- Bottom Navigation -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="76dp"
