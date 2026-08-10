@@ -43,37 +43,7 @@
     </LinearLayout>
 
 
-    <!-- Refresh Rate -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="14dp"
-        android:paddingEnd="6dp"
-        android:background="@drawable/bg_refresh">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Refresh Rate"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
-
-        <Spinner
-            android:id="@+id/spRefresh"
-            android:layout_width="220dp"
-            android:layout_height="44dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"/>
-
-    </LinearLayout>
 
 
     <!-- Main content -->
@@ -97,7 +67,37 @@
             android:clipChildren="false"
             android:clipToPadding="false">
 
+            <!-- Refresh Rate -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="6dp"
+                android:background="@drawable/bg_refresh">
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Refresh Rate"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <Spinner
+                    android:id="@+id/spRefresh"
+                    android:layout_width="220dp"
+                    android:layout_height="44dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"/>
+
+            </LinearLayout>
             <!-- CPU -->
             <LinearLayout
                 android:id="@+id/cardCPU"
