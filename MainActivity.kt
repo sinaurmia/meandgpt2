@@ -270,34 +270,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun styleRefreshSpinner() {
-
-        val borderColor =
-            ContextCompat.getColor(
-                this,
-                if (isDarkTheme()) {
-                    R.color.dark_border
-                } else {
-                    R.color.light_border
-                }
-            )
-
-        val backgroundColor =
-            ContextCompat.getColor(
-                this,
-                if (isDarkTheme()) {
-                    R.color.dark_surface
-                } else {
-                    R.color.light_surface
-                }
-            )
-
-        spRefresh.background =
-            roundedBorder(
-                borderColor,
-                backgroundColor,
-                1f,
-                6f
-            )
+        spRefresh.background = null
     }
 
     private fun styleBottomButtons() {
