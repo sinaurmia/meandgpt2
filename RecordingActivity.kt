@@ -311,8 +311,6 @@ class RecordingActivity : AppCompatActivity() {
         btnStart.alpha = 0.45f
         btnStop.alpha = 1f
 
-        updateRecordingDisplay()
-
         restartUiUpdater()
     }
 
@@ -344,7 +342,6 @@ class RecordingActivity : AppCompatActivity() {
         btnStart.alpha = 1f
         btnStop.alpha = 0.45f
 
-        clearRecordingDisplay()
     }
 
     private fun resetRecording() {
@@ -691,7 +688,7 @@ class RecordingActivity : AppCompatActivity() {
         if (logs.isEmpty()) {
             addEmptyRow()
         } else {
-            logs.reversed().forEachIndexed { index, sample ->
+            logs.forEachIndexed { index, sample ->
                 addTableRow(
                     index + 1,
                     sample,
