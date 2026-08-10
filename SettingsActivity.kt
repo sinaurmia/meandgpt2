@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
@@ -145,12 +144,6 @@ class SettingsActivity : AppCompatActivity() {
         sensorPreferences.saveBatteryPercentageEnabled(
             chkBatteryPercentage.isChecked
         )
-
-        Toast.makeText(
-            this,
-            "Settings saved",
-            Toast.LENGTH_SHORT
-        ).show()
 
         finish()
     }
