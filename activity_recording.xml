@@ -19,7 +19,9 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="12dp"
-        android:paddingEnd="8dp">
+        android:paddingEnd="8dp"
+        android:background="?android:attr/colorBackground"
+        android:elevation="6dp">
 
         <Space
             android:layout_width="42dp"
@@ -73,13 +75,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:layout_marginStart="14dp"
-                android:layout_marginEnd="14dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="14dp"
-                android:paddingEnd="6dp"
-                android:background="@drawable/bg_refresh">
+                android:background="@drawable/bg_refresh"
+                android:elevation="4dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -568,7 +571,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
@@ -625,8 +628,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
                 <Button

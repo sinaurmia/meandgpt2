@@ -158,6 +158,7 @@ class RecordingActivity : AppCompatActivity() {
         setupRefreshRate()
         setupButtons()
         clearRecordingDisplay()
+        styleDarkMode()
     }
     private val recordingTimerRunnable =
         object : Runnable {
@@ -275,7 +276,106 @@ class RecordingActivity : AppCompatActivity() {
             )
         }
     }
+    private fun styleDarkMode() {
 
+        if (!isDarkTheme()) {
+            return
+        }
+
+        val borderColor =
+            ContextCompat.getColor(
+                this,
+                R.color.dark_border
+            )
+
+        val backgroundColor =
+            ContextCompat.getColor(
+                this,
+                R.color.dark_background
+            )
+
+        val cardViews = listOf(
+            txtCPU.parent as View,
+            txtGPU.parent as View,
+            txtBattery.parent as View,
+            txtStatus,
+            txtCount,
+            txtTotalRows
+        )
+
+        cardViews.forEach { view ->
+
+            view.background =
+                roundedBorder(
+                    borderColor,
+                    ContextCompat.getColor(
+                        this,
+                        R.color.dark_surface
+                    ),
+                    1f,
+                    6f
+                )
+
+            view.elevation =
+                4f * resources.displayMetrics.density
+        }
+
+        val bottomNavigation =
+            findViewById<View>(
+                R.id.btnMonitoring
+            ).parent as View
+
+        bottomNavigation.background =
+            roundedBorder(
+                borderColor,
+                backgroundColor,
+                1f,
+                14f
+            )
+
+        bottomNavigation.elevation =
+            6f * resources.displayMetrics.density
+    }
+    private fun isDarkTheme(): Boolean {
+
+        return (
+                resources.configuration.uiMode and
+                        android.content.res.Configuration.UI_MODE_NIGHT_MASK
+                ) ==
+                android.content.res.Configuration.UI_MODE_NIGHT_YES
+    }
+
+    private fun roundedBorder(
+        strokeColor: Int,
+        fillColor: Int,
+        strokeWidthDp: Float,
+        radiusDp: Float
+    ): android.graphics.drawable.GradientDrawable {
+
+        val drawable =
+            android.graphics.drawable.GradientDrawable()
+
+        drawable.shape =
+            android.graphics.drawable.GradientDrawable.RECTANGLE
+
+        drawable.setColor(fillColor)
+
+        drawable.cornerRadius =
+            radiusDp *
+                    resources.displayMetrics.density
+
+        drawable.setStroke(
+            (
+                    strokeWidthDp *
+                            resources.displayMetrics.density
+                    )
+                .toInt()
+                .coerceAtLeast(1),
+            strokeColor
+        )
+
+        return drawable
+    }
     private fun startRecording() {
         if (recorder.isRunning())
             return
