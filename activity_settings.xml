@@ -181,7 +181,6 @@
             android:background="@android:color/transparent"
             android:backgroundTint="@null"
             app:backgroundTint="@null"
-            android:enabled="false"
             android:text="✔&#10;SAVE"
             android:textColor="@color/primary_blue"
             android:textSize="12sp"
