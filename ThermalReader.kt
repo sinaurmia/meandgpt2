@@ -581,38 +581,45 @@ class ThermalReader(
         name: String
     ): SensorType {
 
-        val n =
-            name
-                .lowercase(Locale.US)
-                .replace(
-                    "_",
-                    ""
-                )
-                .replace(
-                    "-",
-                    ""
-                )
-                .replace(
-                    " ",
-                    ""
-                )
+        val n = name
+            .lowercase(Locale.ROOT)
+            .trim()
 
         return when {
 
-            /*
-             * Qualcomm
-             */
+            // =========================
+            // CPU
+            // =========================
+
             n.contains("cpu") ||
-                    n.contains("cpub") ||
-                    n.contains("cpul") ||
-                    n.contains("cpuss") ||
-                    n.contains("cpucluster") ||
                     n.contains("cluster") ||
-                    n.contains("big") ||
-                    n.contains("little") ||
-                    n.contains("apc") ||
-                    n.contains("msm") ||
-                    n.contains("krait") ||
+
+                    // MediaTek
+                    n.contains("mtktscpu") ||
+                    n.contains("mtk_cpu") ||
+                    n.contains("mtk-cpu") ||
+
+                    // Qualcomm
+                    n.contains("cpuss") ||
+
+                    // Generic CPU subsystem names
+                    n.contains("cpu-") ||
+                    n.contains("cpu_") ||
+
+                    // Big / Little CPU clusters
+                    n.startsWith("big") ||
+                    n.startsWith("little") ||
+
+                    // ARM CPU core / cluster identifiers
+                    n.contains("a53") ||
+                    n.contains("a55") ||
+                    n.contains("a57") ||
+                    n.contains("a72") ||
+                    n.contains("a73") ||
+                    n.contains("a75") ||
+                    n.contains("a76") ||
+                    n.contains("a77") ||
+                    n.contains("a78") ||
                     n.contains("x1") ||
                     n.contains("x2") ||
                     n.contains("x3") ||
@@ -620,72 +627,38 @@ class ThermalReader(
 
                 SensorType.CPU
 
-            /*
-             * MediaTek
-             */
-            n.contains("mtktscpu") ||
-                    n.contains("mtkcpu") ||
-                    n.contains("mtktsapus") ||
-                    n.contains("mtktsap") ||
 
-                    /*
-                     * Samsung / Exynos
-                     */
-                    n.contains("exynos") ||
-                    n.contains("exynoscpu") ||
+            // =========================
+            // GPU
+            // =========================
 
-                    /*
-                     * HiSilicon / Huawei
-                     */
-                    n.contains("kirin") ||
-                    n.contains("hisi") ||
-                    n.contains("hi3660") ||
-                    n.contains("hi3670") ||
-                    n.contains("hi6250") ||
-
-                    /*
-                     * Unisoc / Spreadtrum
-                     */
-                    n.contains("unisoc") ||
-                    n.contains("sprd") ||
-
-                    /*
-                     * Rockchip
-                     */
-                    n.contains("rockchip") ||
-                    n.contains("rk33") ||
-                    n.contains("rk35") ->
-
-                SensorType.CPU
-
-            /*
-             * GPU
-             */
             n.contains("gpu") ||
                     n.contains("kgsl") ||
                     n.contains("gpuss") ||
                     n.contains("adreno") ||
                     n.contains("mali") ||
-                    n.contains("panfrost") ||
-                    n.contains("powervr") ||
-                    n.contains("vivante") ||
-                    n.contains("graphics") ||
-                    n.contains("gfx") ->
+                    n.contains("hisi_gpu") ||
+                    n.contains("hisigpu") ->
 
                 SensorType.GPU
 
-            /*
-             * Battery
-             */
+
+            // =========================
+            // Battery
+            // =========================
+
             n.contains("battery") ||
                     n.contains("bms") ||
-                    n.contains("battery") ||
                     n == "bat" ||
-                    n.startsWith("bat") ||
-                    n.contains("pmic") ||
-                    n.contains("charger") ->
+                    n.startsWith("bat-") ||
+                    n.startsWith("bat_") ->
 
                 SensorType.BATTERY
+
+
+            // =========================
+            // Unknown
+            // =========================
 
             else ->
                 SensorType.UNKNOWN
