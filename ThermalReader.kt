@@ -251,43 +251,86 @@ class ThermalReader(
         val selectedSensors =
             preferences.getSelectedSensors()
 
+        /*
+         * فقط سنسورهایی که واقعاً لازم داریم.
+         *
+         * CPU و GPU از Settings انتخاب می‌شوند.
+         * سنسورهای اضافی فقط در صورت تیک خوردن خوانده می‌شوند.
+         *
+         * بنابراین Monitoring دیگر تمام thermal zone ها
+         * را در هر refresh نمی‌خواند.
+         */
+        val requiredSensors =
+            mutableSetOf<String>()
+
+        selectedCpu?.let {
+            requiredSensors.add(it)
+        }
+
+        selectedGpu?.let {
+            requiredSensors.add(it)
+        }
+
+        requiredSensors.addAll(
+            selectedSensors
+        )
+
+        /*
+         * اگر CPU یا GPU هنوز در Settings انتخاب نشده باشند،
+         * فقط در این حالت یک سنسور مناسب را برای آنها پیدا می‌کنیم.
+         *
+         * یعنی انتخاب خودکار فقط برای پیدا کردن CPU/GPU اصلی
+         * انجام می‌شود، نه اینکه تمام CPU/GPUهای سیستم خوانده شوند.
+         */
+        var needAutoCpu =
+            selectedCpu.isNullOrBlank()
+
+        var needAutoGpu =
+            selectedGpu.isNullOrBlank()
+
         for (sensor in list) {
 
             try {
 
-                val sensorType =
-                    detectSensor(sensor.name)
+                val isExplicitlySelected =
+                    requiredSensors.any {
+                        sensor.name.equals(
+                            it,
+                            ignoreCase = true
+                        )
+                    }
 
-                val isSelectedSensor =
-                    selectedSensors.contains(
+                val sensorType =
+                    detectSensor(
                         sensor.name
                     )
 
-                val isSelectedCpu =
-                    selectedCpu != null &&
-                            sensor.name.equals(
-                                selectedCpu,
-                                true
-                            )
+                /*
+                 * اگر سنسور صراحتاً انتخاب نشده باشد،
+                 * فقط زمانی اجازه خواندن دارد که هنوز
+                 * CPU/GPU اصلی را پیدا نکرده‌ایم.
+                 */
+                val isCandidateCpu =
+                    needAutoCpu &&
+                            sensorType == SensorType.CPU
 
-                val isSelectedGpu =
-                    selectedGpu != null &&
-                            sensor.name.equals(
-                                selectedGpu,
-                                true
-                            )
+                val isCandidateGpu =
+                    needAutoGpu &&
+                            sensorType == SensorType.GPU
 
                 /*
-                 * سنسورهای اصلی همیشه خوانده می‌شوند،
-                 * سنسورهای اضافی فقط در صورت انتخاب شدن.
+                 * Battery برای نمایش وضعیت باتری لازم است،
+                 * اما فقط اولین Battery thermal sensor را می‌خوانیم.
                  */
+                val isCandidateBattery =
+                    sensorType == SensorType.BATTERY &&
+                            battery == null
+
                 val shouldRead =
-                    isSelectedSensor ||
-                            isSelectedCpu ||
-                            isSelectedGpu ||
-                            sensorType == SensorType.CPU ||
-                            sensorType == SensorType.GPU ||
-                            sensorType == SensorType.BATTERY
+                    isExplicitlySelected ||
+                            isCandidateCpu ||
+                            isCandidateGpu ||
+                            isCandidateBattery
 
                 if (!shouldRead)
                     continue
@@ -304,11 +347,18 @@ class ThermalReader(
                     selectedCpu != null &&
                     sensor.name.equals(
                         selectedCpu,
-                        true
+                        ignoreCase = true
                     )
                 ) {
-                    cpu = value
-                    cpuSensorName = sensor.name
+
+                    cpu =
+                        value
+
+                    cpuSensorName =
+                        sensor.name
+
+                    needAutoCpu =
+                        false
                 }
 
                 /*
@@ -318,35 +368,56 @@ class ThermalReader(
                     selectedGpu != null &&
                     sensor.name.equals(
                         selectedGpu,
-                        true
+                        ignoreCase = true
                     )
                 ) {
-                    gpu = value
-                    gpuSensorName = sensor.name
+
+                    gpu =
+                        value
+
+                    gpuSensorName =
+                        sensor.name
+
+                    needAutoGpu =
+                        false
                 }
 
                 /*
-                 * انتخاب خودکار CPU
+                 * CPU خودکار
+                 *
+                 * فقط اولین سنسور مناسب انتخاب می‌شود.
                  */
                 if (
-                    selectedCpu == null &&
-                    cpu == null &&
+                    needAutoCpu &&
                     sensorType == SensorType.CPU
                 ) {
-                    cpu = value
-                    cpuSensorName = sensor.name
+
+                    cpu =
+                        value
+
+                    cpuSensorName =
+                        sensor.name
+
+                    needAutoCpu =
+                        false
                 }
 
                 /*
-                 * انتخاب خودکار GPU
+                 * GPU خودکار
                  */
                 if (
-                    selectedGpu == null &&
-                    gpu == null &&
+                    needAutoGpu &&
                     sensorType == SensorType.GPU
                 ) {
-                    gpu = value
-                    gpuSensorName = sensor.name
+
+                    gpu =
+                        value
+
+                    gpuSensorName =
+                        sensor.name
+
+                    needAutoGpu =
+                        false
                 }
 
                 /*
@@ -356,21 +427,33 @@ class ThermalReader(
                     sensorType == SensorType.BATTERY &&
                     battery == null
                 ) {
-                    battery = value
+
+                    battery =
+                        value
                 }
 
+                /*
+                 * آیا این سنسور همان CPU اصلی است؟
+                 */
                 val isMainCpu =
                     sensor.name.equals(
                         cpuSensorName,
-                        true
+                        ignoreCase = true
                     )
 
+                /*
+                 * آیا این سنسور همان GPU اصلی است؟
+                 */
                 val isMainGpu =
                     sensor.name.equals(
                         gpuSensorName,
-                        true
+                        ignoreCase = true
                     )
 
+                /*
+                 * Battery را دوباره به عنوان سنسور اضافی
+                 * وارد جدول نمی‌کنیم.
+                 */
                 val isMainBattery =
                     sensorType == SensorType.BATTERY
 
@@ -379,40 +462,66 @@ class ThermalReader(
                  * وارد Sample.sensors می‌شوند.
                  */
                 if (
-                    isSelectedSensor &&
+                    isExplicitlySelected &&
                     !isMainCpu &&
                     !isMainGpu &&
                     !isMainBattery
                 ) {
-                    sensors[sensor.name] = value
+
+                    sensors[
+                        sensor.name
+                    ] = value
                 }
 
             } catch (_: Exception) {
-                // یک سنسور خراب نباید خواندن بقیه را متوقف کند.
+
+                /*
+                 * خرابی یک سنسور نباید باعث شود
+                 * کل Monitoring متوقف شود.
+                 */
             }
         }
 
         /*
-         * اگر thermal battery وجود نداشت،
-         * درصد باتری همچنان از Battery API خوانده می‌شود.
+         * درصد باتری از Android Battery API
+         * گرفته می‌شود و هیچ ارتباطی با ذخیره‌سازی
+         * Recording ندارد.
          */
         if (
             preferences.isBatteryPercentageEnabled()
         ) {
+
             batteryPercentage =
                 readBatteryPercentage()
         }
 
         return Sample(
-            time = System.currentTimeMillis(),
-            date = getCurrentDate(),
-            cpu = cpu,
-            cpuSensorName = cpuSensorName,
-            gpu = gpu,
-            gpuSensorName = gpuSensorName,
-            battery = battery,
-            batteryPercentage = batteryPercentage,
-            sensors = sensors.toSortedMap()
+            time =
+                System.currentTimeMillis(),
+
+            date =
+                getCurrentDate(),
+
+            cpu =
+                cpu,
+
+            cpuSensorName =
+                cpuSensorName,
+
+            gpu =
+                gpu,
+
+            gpuSensorName =
+                gpuSensorName,
+
+            battery =
+                battery,
+
+            batteryPercentage =
+                batteryPercentage,
+
+            sensors =
+                sensors.toSortedMap()
         )
     }
 

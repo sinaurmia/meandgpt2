@@ -30,6 +30,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.content.ContextCompat
 import android.widget.LinearLayout
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,6 +55,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var handler: Handler
     private lateinit var updateRunnable: Runnable
+    private val sensorExecutor =
+        Executors.newSingleThreadScheduledExecutor()
+
+    private var sensorTask:
+            ScheduledFuture<*>? = null
     private lateinit var btnRecording: Button
     private lateinit var btnMenu: TextView
     private var refreshInterval = 1000L
@@ -458,70 +466,97 @@ class MainActivity : AppCompatActivity() {
 
     private fun readTemperatures() {
 
-        try {
+        sensorExecutor.execute {
 
-            val sample =
-                thermalReader.readAll()
+            try {
 
-            statistics.update(sample)
-            cpuTemperatureChart.addTemperature(sample.cpu)
+                /*
+                 * این قسمت خارج از Main Thread اجرا می‌شود.
+                 *
+                 * تمام File I/O و خواندن thermal sensor
+                 * اینجا انجام می‌شود.
+                 */
+                val sample =
+                    thermalReader.readAll()
 
-            setTemperatureCard(
-                txtCPU,
-                "CPU",
-                sample.cpu,
-                statistics.cpuMin,
-                statistics.cpuMax,
-                statistics.cpuAverage,
-                txtCPUMax,
-                txtCPUMin,
-                txtCPUAvg
-            )
+                /*
+                 * از اینجا به بعد فقط تغییر UI داریم،
+                 * بنابراین باید برگردیم Main Thread.
+                 */
+                runOnUiThread {
 
-            setTemperatureCard(
-                txtGPU,
-                "GPU",
-                sample.gpu,
-                statistics.gpuMin,
-                statistics.gpuMax,
-                statistics.gpuAverage,
-                txtGPUMax,
-                txtGPUMin,
-                txtGPUAvg
-            )
+                    if (
+                        isFinishing ||
+                        isDestroyed
+                    ) {
+                        return@runOnUiThread
+                    }
 
-            setTemperatureCard(
-                txtBattery,
-                "Battery",
-                sample.battery,
-                statistics.batteryMin,
-                statistics.batteryMax,
-                statistics.batteryAverage,
-                txtBatteryMax,
-                txtBatteryMin,
-                txtBatteryAvg
-            )
+                    statistics.update(
+                        sample
+                    )
 
-            val enabled =
-                sensorPreferences
-                    .getSelectedSensors()
+                    cpuTemperatureChart
+                        .addTemperature(
+                            sample.cpu
+                        )
 
-            val extraSensors =
-                sample.sensors.filterKeys {
-                    enabled.contains(it)
+                    setTemperatureCard(
+                        txtCPU,
+                        "CPU",
+                        sample.cpu,
+                        statistics.cpuMin,
+                        statistics.cpuMax,
+                        statistics.cpuAverage,
+                        txtCPUMax,
+                        txtCPUMin,
+                        txtCPUAvg
+                    )
+
+                    setTemperatureCard(
+                        txtGPU,
+                        "GPU",
+                        sample.gpu,
+                        statistics.gpuMin,
+                        statistics.gpuMax,
+                        statistics.gpuAverage,
+                        txtGPUMax,
+                        txtGPUMin,
+                        txtGPUAvg
+                    )
+
+                    setTemperatureCard(
+                        txtBattery,
+                        "Battery",
+                        sample.battery,
+                        statistics.batteryMin,
+                        statistics.batteryMax,
+                        statistics.batteryAverage,
+                        txtBatteryMax,
+                        txtBatteryMin,
+                        txtBatteryAvg
+                    )
+
+                    /*
+                     * ThermalReader خودش فقط سنسورهای
+                     * انتخاب‌شده را در sample.sensors گذاشته.
+                     *
+                     * بنابراین دیگر لازم نیست اینجا دوباره
+                     * کل سنسورها را فیلتر کنیم.
+                     */
+                    updateSensorTable(
+                        sample.sensors
+                    )
                 }
 
-            updateSensorTable(
-                extraSensors
-            )
+            } catch (e: Exception) {
 
-        } catch (e: Exception) {
-
-            Log.e(
-                "MONITOR",
-                "Read failed",
-                e
-            )
+                Log.e(
+                    "MONITOR",
+                    "Read failed",
+                    e
+                )
+            }
         }
     }
 
@@ -993,44 +1028,65 @@ class MainActivity : AppCompatActivity() {
 
         updating = true
 
+        sensorTask?.cancel(
+            false
+        )
 
+        /*
+         * اولین خواندن بلافاصله انجام می‌شود.
+         */
         readTemperatures()
 
-        handler.removeCallbacks(
-            updateRunnable
-        )
+        sensorTask =
+            sensorExecutor.scheduleWithFixedDelay(
+                {
+                    if (!updating)
+                        return@scheduleWithFixedDelay
 
-        handler.postDelayed(
-            updateRunnable,
-            refreshInterval
-        )
+                    readTemperatures()
+
+                },
+                refreshInterval,
+                refreshInterval,
+                TimeUnit.MILLISECONDS
+            )
     }
 
     private fun stopUpdater() {
 
         updating = false
 
-        handler.removeCallbacks(
-            updateRunnable
+        sensorTask?.cancel(
+            false
         )
 
+        sensorTask = null
     }
 
     private fun restartUpdater() {
 
-        handler.removeCallbacks(
-            updateRunnable
-        )
-
         if (!updating)
             return
 
-        readTemperatures()
-
-        handler.postDelayed(
-            updateRunnable,
-            refreshInterval
+        sensorTask?.cancel(
+            false
         )
+
+        sensorTask = null
+
+        sensorTask =
+            sensorExecutor.scheduleWithFixedDelay(
+                {
+                    if (!updating)
+                        return@scheduleWithFixedDelay
+
+                    readTemperatures()
+
+                },
+                0L,
+                refreshInterval,
+                TimeUnit.MILLISECONDS
+            )
     }
 
     override fun onResume() {
@@ -1056,6 +1112,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
 
         stopUpdater()
+
+        sensorExecutor.shutdownNow()
 
         super.onDestroy()
     }
