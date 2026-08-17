@@ -86,6 +86,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:text="Refresh Rate"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp"
@@ -93,10 +96,10 @@
 
                 <Spinner
                     android:id="@+id/spRefresh"
-                    android:layout_width="220dp"
+                    android:layout_width="150dp"
                     android:layout_height="44dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"/>
 
